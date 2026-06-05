@@ -1,0 +1,49 @@
+# Composer
+vendor/
+
+# npm / Node
+node_modules/
+
+# WordPress core & uploads (local dev only)
+wp-content/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# PHP tooling
+.phpunit.result.cache
+.phpcs-cache
+.phpstan-cache/
+.phpstan.neon.php
+var/
+
+# Test artifacts
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Build artifacts
+build/
+dist/
+
+# Project-level agent skills
+.agents/

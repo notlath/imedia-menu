@@ -1,0 +1,21 @@
+{
+    "name": "imedia-menu",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "test:js": "jest",
+        "test:e2e": "playwright test"
+    },
+    "devDependencies": {
+        "jest": "^29.7.0",
+        "jest-environment-jsdom": "^29.7.0",
+        "@playwright/test": "^1.40.0"
+    },
+    "jest": {
+        "testEnvironment": "jsdom",
+        "testMatch": [
+            "<rootDir>/tests/js/**/*.test.js"
+        ],
+        "transform": {}
+    }
+}

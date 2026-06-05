@@ -1,0 +1,31 @@
+<?php
+
+declare(strict_types=1);
+
+namespace IMedia\Menu\Frontend;
+
+final class Sticky
+{
+    public function __construct()
+    {
+        add_action('wp_enqueue_scripts', [$this, 'enqueueScript'], 120);
+    }
+
+    public function enqueueScript(): void
+    {
+        $settings = get_option('imedia_menu_settings', []);
+        $sticky   = $settings['sticky'] ?? false;
+
+        if (!$sticky) {
+            return;
+        }
+
+        wp_enqueue_script(
+            'imm-sticky',
+            URL . 'assets/frontend/js/imm-sticky.js',
+            ['imm'],
+            VERSION,
+            true
+        );
+    }
+}

@@ -1,0 +1,38 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "imedia-menu/navigation",
+    "title": "iMedia Menu",
+    "category": "theme",
+    "description": "Display an iMedia Menu powered navigation menu with mega menu support.",
+    "keywords": ["menu", "navigation", "mega menu", "nav"],
+    "textdomain": "imedia-menu",
+    "attributes": {
+        "menuId": {
+            "type": "integer",
+            "default": 0
+        },
+        "className": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "supports": {
+        "html": false,
+        "align": ["wide", "full"],
+        "color": {
+            "text": true,
+            "background": true
+        },
+        "spacing": {
+            "padding": true,
+            "margin": true
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true
+        }
+    },
+    "editorScript": "file:./index.js",
+    "style": "file:../../frontend/css/imm-base.css"
+}

@@ -1,0 +1,130 @@
+<?php
+
+declare(strict_types=1);
+
+namespace IMedia\Menu\Frontend;
+
+final class Assets
+{
+    public function enqueue(): void
+    {
+        $settings = get_option('imedia_menu_settings', []);
+        $enabled  = $settings['enabled'] ?? true;
+
+        if (!$enabled) {
+            return;
+        }
+
+        wp_enqueue_style(
+            'imm-base',
+            URL . 'assets/frontend/css/imm-base.css',
+            [],
+            VERSION
+        );
+
+        $this->enqueueCustomCss();
+
+        wp_enqueue_script(
+            'imm',
+            URL . 'assets/frontend/js/imm.js',
+            [],
+            VERSION,
+            true
+        );
+
+        wp_localize_script('imm', 'immData', [
+            'trigger'    => $settings['trigger_type'] ?? 'hover',
+            'hoverDelay' => (int) ($settings['hover_delay'] ?? 200),
+            'animation'  => $settings['default_animation'] ?? 'fade',
+            'duration'   => (int) ($settings['animation_duration'] ?? 200),
+            'breakpoint' => (int) ($settings['mobile_breakpoint'] ?? 768),
+        ]);
+
+        $this->enqueueConditionalAssets();
+    }
+
+    public function enqueueCustomCss(): void
+    {
+        $uploadDir = wp_upload_dir();
+        $customCss = $uploadDir['basedir'] . '/imedia-menu/imm-custom.css';
+
+        if (file_exists($customCss)) {
+            wp_enqueue_style(
+                'imm-custom',
+                $uploadDir['baseurl'] . '/imedia-menu/imm-custom.css',
+                ['imm-base'],
+                filemtime($customCss)
+            );
+        }
+    }
+
+    public function enqueueConditionalAssets(): void
+    {
+        if (has_filter('wp_nav_menu_items', '__return_true') === false) {
+            return;
+        }
+    }
+
+    public function generateCustomCss(array $settings): bool
+    {
+        $uploadDir = wp_upload_dir();
+        $cssDir    = $uploadDir['basedir'] . '/imedia-menu';
+
+        if (!is_dir($cssDir)) {
+            wp_mkdir_p($cssDir);
+        }
+
+        $vars  = ':root {' . "\n";
+        $vars .= "  --imm-font-family: {$settings['font_family']};\n";
+        $vars .= "  --imm-font-size: {$settings['font_size']}px;\n";
+        $vars .= "  --imm-font-weight: {$settings['font_weight']};\n";
+        $vars .= "  --imm-line-height: {$settings['line_height']};\n";
+        $vars .= "  --imm-height: {$settings['menu_bar_height']}px;\n";
+        $vars .= "  --imm-item-padding: {$settings['item_padding']};\n";
+        $vars .= "  --imm-panel-padding: {$settings['panel_padding']};\n";
+        $vars .= "  --imm-gap: {$settings['item_gap']}px;\n";
+        $vars .= "  --imm-duration: {$settings['animation_duration']}ms;\n";
+        $vars .= "  --imm-z-index: {$settings['z_index']};\n";
+        $vars .= "}\n";
+
+        $css = file_put_contents($cssDir . '/imm-custom.css', $vars); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+
+        return $css !== false;
+    }
+
+    public function maybeInlineCustomCss(): void
+    {
+        $settings = get_option('imedia_menu_settings', []);
+        if (empty($settings)) {
+            return;
+        }
+
+        $css = $this->buildInlineCss($settings);
+        if ($css) {
+            wp_add_inline_style('imm-base', $css);
+        }
+    }
+
+    private function buildInlineCss(array $settings): string
+    {
+        $rules = [];
+
+        if (!empty($settings['menu_bar_bg'])) {
+            $rules[] = ".imm-nav { --imm-bg: {$settings['menu_bar_bg']}; }";
+        }
+
+        if (!empty($settings['menu_text_color'])) {
+            $rules[] = ".imm-nav { --imm-text: {$settings['menu_text_color']}; }";
+        }
+
+        if (!empty($settings['menu_text_hover'])) {
+            $rules[] = ".imm-nav { --imm-text-hover: {$settings['menu_text_hover']}; }";
+        }
+
+        if (!empty($settings['dropdown_bg'])) {
+            $rules[] = ".imm-nav { --imm-dropdown-bg: {$settings['dropdown_bg']}; }";
+        }
+
+        return implode("\n", $rules);
+    }
+}
