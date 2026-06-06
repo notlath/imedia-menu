@@ -89,26 +89,11 @@ final class BlockEditorServiceProvider implements ServiceProvider {
 		$trigger  = $settings['trigger_type'] ?? 'hover';
 		$delay    = (int) ( $settings['hover_delay'] ?? 200 );
 
-		$style   = '';
-		$cssVars = array();
-
-		if ( ! empty( $settings['menu_bar_bg'] ) ) {
-			$cssVars[] = '--imm-bg:' . $settings['menu_bar_bg'];
-		}
-		if ( ! empty( $settings['menu_text_color'] ) ) {
-			$cssVars[] = '--imm-text:' . $settings['menu_text_color'];
-		}
-
-		if ( ! empty( $cssVars ) ) {
-			$style = ' style="' . esc_attr( implode( ';', $cssVars ) ) . '"';
-		}
-
 		$search  = '<nav';
 		$replace = sprintf(
-			'<nav data-trigger="%s" data-hover-delay="%d"%s',
+			'<nav data-trigger="%s" data-hover-delay="%d"',
 			esc_attr( $trigger ),
-			$delay,
-			$style
+			$delay
 		);
 
 		$menuHtml = str_replace( $search, $replace, $menuHtml );
@@ -118,6 +103,11 @@ final class BlockEditorServiceProvider implements ServiceProvider {
 			'class="imm-menu" role="menubar">',
 			$menuHtml
 		);
+
+		$inlineCss = \IMedia\Menu\Frontend\Assets::buildInlineCss( $settings );
+		if ( $inlineCss !== '' ) {
+			$menuHtml .= '<style>' . $inlineCss . '</style>';
+		}
 
 		return $menuHtml;
 	}

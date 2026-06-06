@@ -77,6 +77,10 @@ final class MenuCache implements Cacheable {
 			)
 		);
 
+		if ( function_exists( 'wp_cache_flush_group' ) ) {
+			wp_cache_flush_group( 'imedia_menu' );
+		}
+
 		return true;
 	}
 }

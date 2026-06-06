@@ -43,6 +43,7 @@ final class Assets {
 			)
 		);
 
+		$this->maybeInlineCustomCss();
 		$this->enqueueConditionalAssets();
 	}
 
@@ -104,7 +105,7 @@ final class Assets {
 		}
 	}
 
-	private function buildInlineCss( array $settings ): string {
+	public static function buildInlineCss( array $settings ): string {
 		$rules   = array();
 		$navRule = '';
 

@@ -274,7 +274,13 @@ final class RestApiServiceProvider implements ServiceProvider {
 
 		LocationOverrides::setForLocation( $slug, $overrides );
 
+		$merged = LocationOverrides::mergeWithGlobal(
+			get_option( 'imedia_menu_settings', array() ),
+			$slug
+		);
+
 		do_action( 'imedia_menu_location_overrides_saved', $slug, $overrides );
+		do_action( 'imedia_menu_settings_saved', $merged );
 
 		return new \WP_REST_Response(
 			array(

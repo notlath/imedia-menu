@@ -10,7 +10,11 @@ use IMedia\Menu\Frontend\Assets;
 use IMedia\Menu\Frontend\MenuWalker;
 use IMedia\Menu\Cache\MenuCache;
 
+
 final class FrontendServiceProvider implements ServiceProvider {
+
+	private const FILTER_PRIORITY_CACHE      = 10;
+	private const FILTER_PRIORITY_ATTRIBUTES = 20;
 
 	private Assets $assets;
 
@@ -62,7 +66,7 @@ final class FrontendServiceProvider implements ServiceProvider {
 					}
 					return $navHtml;
 				},
-				10,
+				self::FILTER_PRIORITY_CACHE,
 				2
 			);
 		}
@@ -106,7 +110,7 @@ final class FrontendServiceProvider implements ServiceProvider {
 
 				return $navHtml;
 			},
-			20,
+			self::FILTER_PRIORITY_ATTRIBUTES,
 			2
 		);
 
@@ -114,40 +118,23 @@ final class FrontendServiceProvider implements ServiceProvider {
 	}
 
 	private function addPerLocationInlineCss( string $location, array $settings ): void {
-		$locationClass = '.imm-nav--location-' . sanitize_title( $location );
-		$cssVars       = array();
+		// Note: this method runs from the wp_nav_menu_args filter, which fires AFTER
+		// 'imm-base' styles are printed in <head>. Per-location CSS added here is
+		// therefore too late to appear on the page. The global design CSS added by
+		// Assets::enqueue() (via Assets::maybeInlineCustomCss()) is the primary
+		// mechanism. This method is kept for future use (e.g., when a per-location
+		// style is registered and enqueued at wp_enqueue_scripts time).
 
-		if ( ! empty( $settings['menu_bar_bg'] ) ) {
-			$cssVars[] = '--imm-bg:' . $settings['menu_bar_bg'];
-		}
+		$inlineCss = Assets::buildInlineCss( $settings );
 
-		if ( ! empty( $settings['menu_bar_height'] ) ) {
-			$cssVars[] = '--imm-height:' . (int) $settings['menu_bar_height'] . 'px';
-		}
-
-		if ( ! empty( $settings['menu_text_color'] ) ) {
-			$cssVars[] = '--imm-text:' . $settings['menu_text_color'];
-		}
-
-		if ( ! empty( $settings['menu_text_hover'] ) ) {
-			$cssVars[] = '--imm-text-hover:' . $settings['menu_text_hover'];
-		}
-
-		if ( ! empty( $settings['dropdown_bg'] ) ) {
-			$cssVars[] = '--imm-dropdown-bg:' . $settings['dropdown_bg'];
-		}
-
-		if ( empty( $cssVars ) ) {
+		if ( $inlineCss === '' ) {
 			return;
 		}
 
-		$css = sprintf(
-			'%s { %s }',
-			esc_attr( $locationClass ),
-			implode( ';', $cssVars )
-		);
+		$locationClass = '.imm-nav--location-' . sanitize_title( $location );
+		$wrapped       = str_replace( '.imm-nav', $locationClass, $inlineCss );
 
-		wp_add_inline_style( 'imm-base', $css );
+		wp_add_inline_style( 'imm-base', $wrapped );
 	}
 
 	private function getMenuIdFromLocation( string $location ): int {

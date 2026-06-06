@@ -88,6 +88,10 @@ function wp_cache_get($key, $group = '', $force = false, &$found = null) { $foun
 function wp_cache_set($key, $data, $group = '', $expire = 0) { return true; }
 function wp_cache_delete($key, $group = '') { return true; }
 function wp_cache_flush() { return true; }
+function wp_cache_flush_group($group) {
+    $GLOBALS['__wp_cache_flush_group_calls'][] = $group;
+    return true;
+}
 function wp_clean_plugins_cache($clearMu = false) {}
 function wp_using_ext_object_cache() { return false; }
 function clean_post_cache($postId) {}
