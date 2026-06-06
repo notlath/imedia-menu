@@ -33,7 +33,7 @@ final class Schema {
 		$mysql_version = $wpdb->db_version();
 
 		if ( version_compare( $mysql_version, '5.7', '<' ) ) {
-			deactivate_plugins( BASENAME );
+			deactivate_plugins( IMEDIA_MENU_BASENAME );
 			wp_die(
 				esc_html__( 'iMedia Menu requires MySQL 5.7+ or MariaDB 10.2+.', 'imedia-menu' ),
 				esc_html__( 'Plugin Activation Error', 'imedia-menu' ),

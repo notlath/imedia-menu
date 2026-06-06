@@ -38,12 +38,12 @@ final class MegaPanelServiceProvider implements ServiceProvider {
 		$script_path = 'assets/admin/panel-builder/build/index.js';
 		$style_path  = 'assets/admin/panel-builder/build/index.css';
 
-		if ( file_exists( DIR . '/' . $script_path ) ) {
-			$script_asset = require DIR . '/assets/admin/panel-builder/build/index.asset.php';
+		if ( file_exists( IMEDIA_MENU_DIR . '/' . $script_path ) ) {
+			$script_asset = require IMEDIA_MENU_DIR . '/assets/admin/panel-builder/build/index.asset.php';
 
 			wp_enqueue_script(
 				'imedia-menu-panel-builder',
-				URL . $script_path,
+				IMEDIA_MENU_URL . $script_path,
 				$script_asset['dependencies'] ?? array(
 					'wp-element',
 					'wp-data',
@@ -52,14 +52,14 @@ final class MegaPanelServiceProvider implements ServiceProvider {
 					'wp-api-fetch',
 					'wp-block-editor',
 				),
-				$script_asset['version'] ?? VERSION,
+				$script_asset['version'] ?? IMEDIA_MENU_VERSION,
 				true
 			);
 
 			wp_set_script_translations(
 				'imedia-menu-panel-builder',
 				'imedia-menu',
-				DIR . '/languages'
+				IMEDIA_MENU_DIR . '/languages'
 			);
 
 			wp_localize_script(
@@ -73,12 +73,12 @@ final class MegaPanelServiceProvider implements ServiceProvider {
 			);
 		}
 
-		if ( file_exists( DIR . '/' . $style_path ) ) {
+		if ( file_exists( IMEDIA_MENU_DIR . '/' . $style_path ) ) {
 			wp_enqueue_style(
 				'imedia-menu-panel-builder',
-				URL . $style_path,
+				IMEDIA_MENU_URL . $style_path,
 				array( 'wp-components' ),
-				VERSION
+				IMEDIA_MENU_VERSION
 			);
 		}
 	}
@@ -96,9 +96,9 @@ final class MegaPanelServiceProvider implements ServiceProvider {
 
 		wp_enqueue_style(
 			'imedia-menu-admin',
-			URL . 'assets/admin/css/imedia-admin.css',
+			IMEDIA_MENU_URL . 'assets/admin/css/imedia-admin.css',
 			array( 'wp-components', 'imedia-menu-panel-builder' ),
-			VERSION
+			IMEDIA_MENU_VERSION
 		);
 	}
 

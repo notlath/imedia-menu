@@ -38,7 +38,7 @@ final class MigrationRunner {
 	private function getMigrations(): array {
 		$migrations = array();
 
-		foreach ( glob( DIR . '/src/Database/Migrations/Migration_*.php' ) as $file ) {
+		foreach ( glob( IMEDIA_MENU_DIR . '/src/Database/Migrations/Migration_*.php' ) as $file ) {
 			$class = self::MIGRATIONS_NAMESPACE . pathinfo( $file, PATHINFO_FILENAME );
 
 			if ( class_exists( $class ) ) {

@@ -13,17 +13,17 @@ final class Assets {
 
 		wp_enqueue_style(
 			'imedia-menu-admin',
-			URL . 'assets/admin/css/imedia-admin.css',
+			IMEDIA_MENU_URL . 'assets/admin/css/imedia-admin.css',
 			array( 'wp-components' ),
-			VERSION
+			IMEDIA_MENU_VERSION
 		);
 
 		if ( $hook === 'nav-menus.php' ) {
 			wp_enqueue_script(
 				'imedia-menu-menu-editor',
-				URL . 'assets/admin/js/imedia-menu-editor.js',
+				IMEDIA_MENU_URL . 'assets/admin/js/imedia-menu-editor.js',
 				array( 'jquery' ),
-				VERSION,
+				IMEDIA_MENU_VERSION,
 				true
 			);
 

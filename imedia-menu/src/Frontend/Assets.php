@@ -16,18 +16,18 @@ final class Assets {
 
 		wp_enqueue_style(
 			'imm-base',
-			URL . 'assets/frontend/css/imm-base.css',
+			IMEDIA_MENU_URL . 'assets/frontend/css/imm-base.css',
 			array(),
-			VERSION
+			IMEDIA_MENU_VERSION
 		);
 
 		$this->enqueueCustomCss();
 
 		wp_enqueue_script(
 			'imm',
-			URL . 'assets/frontend/js/imm.js',
+			IMEDIA_MENU_URL . 'assets/frontend/js/imm.js',
 			array(),
-			VERSION,
+			IMEDIA_MENU_VERSION,
 			true
 		);
 

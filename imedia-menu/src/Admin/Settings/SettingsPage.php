@@ -39,7 +39,7 @@ final class SettingsPage {
 	}
 
 	private function hasReactBuild(): bool {
-		return file_exists( DIR . '/assets/admin/settings-page/build/index.js' );
+		return file_exists( IMEDIA_MENU_DIR . '/assets/admin/settings-page/build/index.js' );
 	}
 
 	private function renderReactApp(): void {

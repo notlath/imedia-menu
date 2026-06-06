@@ -21,7 +21,7 @@ final class Exporter {
 		global $wpdb;
 
 		$data = array(
-			'version'   => VERSION,
+			'version'   => IMEDIA_MENU_VERSION,
 			'exported'  => current_time( 'mysql' ),
 			'settings'  => get_option( 'imedia_menu_settings', array() ),
 			'panels'    => $this->exportPanels(),

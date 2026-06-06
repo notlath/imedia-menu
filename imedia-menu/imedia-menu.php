@@ -23,11 +23,11 @@ namespace IMedia\Menu;
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'VERSION', '1.0.0' );
-define( 'FILE', __FILE__ );
-define( 'DIR', __DIR__ );
-define( 'URL', plugin_dir_url( __FILE__ ) );
-define( 'BASENAME', plugin_basename( __FILE__ ) );
+define( 'IMEDIA_MENU_VERSION', '1.0.0' );
+define( 'IMEDIA_MENU_FILE', __FILE__ );
+define( 'IMEDIA_MENU_DIR', __DIR__ );
+define( 'IMEDIA_MENU_URL', plugin_dir_url( __FILE__ ) );
+define( 'IMEDIA_MENU_BASENAME', plugin_basename( __FILE__ ) );
 define( 'MIN_PHP', '8.1' );
 define( 'MIN_WP', '6.4' );
 
@@ -46,14 +46,14 @@ if ( version_compare( PHP_VERSION, MIN_PHP, '<' ) ) {
 	return;
 }
 
-if ( file_exists( DIR . '/vendor/autoload.php' ) ) {
-	require_once DIR . '/vendor/autoload.php';
+if ( defined( 'WP_DEBUG' ) && WP_DEBUG && file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
+	require_once __DIR__ . '/vendor/autoload.php';
 }
 
 spl_autoload_register(
 	function ( string $class ): void {
 		$prefix = 'IMedia\\Menu\\';
-		$base   = DIR . '/src/';
+		$base   = IMEDIA_MENU_DIR . '/src/';
 
 		if ( strncmp( $prefix, $class, strlen( $prefix ) ) !== 0 ) {
 			return;
@@ -68,13 +68,13 @@ spl_autoload_register(
 	}
 );
 
-register_activation_hook( FILE, array( Activator::class, 'activate' ) );
-register_deactivation_hook( FILE, array( Deactivator::class, 'deactivate' ) );
+register_activation_hook( IMEDIA_MENU_FILE, array( Activator::class, 'activate' ) );
+register_deactivation_hook( IMEDIA_MENU_FILE, array( Deactivator::class, 'deactivate' ) );
 
 add_action(
 	'init',
 	function (): void {
-		load_plugin_textdomain( 'imedia-menu', false, dirname( BASENAME ) . '/languages' );
+		load_plugin_textdomain( 'imedia-menu', false, dirname( IMEDIA_MENU_BASENAME ) . '/languages' );
 	}
 );
 

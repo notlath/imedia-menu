@@ -27,7 +27,7 @@ final class Registry {
 		return $this->blocks;
 	}
 
-	public function render( array $block ): string {
+	public function render( array $block, ?int $menuItemId = null ): string {
 		$type   = $block['type'] ?? '';
 		$config = $block['config'] ?? array();
 		$styles = $block['styles'] ?? array();
@@ -39,6 +39,10 @@ final class Registry {
 				'<!-- iMedia Menu: Unknown block type "%s" -->',
 				esc_html( $type )
 			);
+		}
+
+		if ( $handler instanceof MenuLinksBlock && $menuItemId !== null && $menuItemId > 0 ) {
+			$handler->setMenuItemId( $menuItemId );
 		}
 
 		$html = $handler->render( $config, $styles );

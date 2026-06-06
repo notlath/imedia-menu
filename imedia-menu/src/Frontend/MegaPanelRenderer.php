@@ -18,23 +18,24 @@ final class MegaPanelRenderer {
 	}
 
 	public function render( object $panel ): string {
-		$config = $panel->config ?? array();
-		$rows   = $config['rows'] ?? array();
-		$html   = '';
+		$config      = $panel->config ?? array();
+		$rows        = $config['rows'] ?? array();
+		$html        = '';
+		$menuItemId  = (int) ( $panel->menu_item_id ?? 0 );
 
 		foreach ( $rows as $row ) {
-			$html .= $this->renderRow( $row, $panel );
+			$html .= $this->renderRow( $row, $panel, $menuItemId );
 		}
 
 		return $html;
 	}
 
-	private function renderRow( array $row, object $panel ): string {
+	private function renderRow( array $row, object $panel, int $menuItemId ): string {
 		$columns = $row['columns'] ?? array();
 		$html    = '<div class="imm-row">';
 
 		foreach ( $columns as $column ) {
-			$html .= $this->renderColumn( $column, $panel );
+			$html .= $this->renderColumn( $column, $panel, $menuItemId );
 		}
 
 		$html .= '</div>';
@@ -42,7 +43,7 @@ final class MegaPanelRenderer {
 		return $html;
 	}
 
-	private function renderColumn( array $column, object $panel ): string {
+	private function renderColumn( array $column, object $panel, int $menuItemId ): string {
 		$blocks       = $column['blocks'] ?? array();
 		$width        = $column['width'] ?? 'auto';
 		$columnStyles = $column['styles'] ?? array();
@@ -66,7 +67,7 @@ final class MegaPanelRenderer {
 				continue;
 			}
 
-			$html .= $this->registry->render( $block );
+			$html .= $this->registry->render( $block, $menuItemId );
 		}
 
 		$html .= '</div>';

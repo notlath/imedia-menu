@@ -18,7 +18,7 @@ final class Activator {
 
 	private static function checkRequirements(): void {
 		if ( version_compare( PHP_VERSION, MIN_PHP, '<' ) ) {
-			deactivate_plugins( BASENAME );
+			deactivate_plugins( IMEDIA_MENU_BASENAME );
 			wp_die(
 				esc_html__( 'iMedia Menu requires PHP 8.1 or higher.', 'imedia-menu' ),
 				esc_html__( 'Plugin Activation Error', 'imedia-menu' ),
@@ -28,7 +28,7 @@ final class Activator {
 
 		global $wp_version;
 		if ( version_compare( $wp_version, MIN_WP, '<' ) ) {
-			deactivate_plugins( BASENAME );
+			deactivate_plugins( IMEDIA_MENU_BASENAME );
 			wp_die(
 				esc_html__( 'iMedia Menu requires WordPress 6.4 or higher.', 'imedia-menu' ),
 				esc_html__( 'Plugin Activation Error', 'imedia-menu' ),
@@ -43,7 +43,7 @@ final class Activator {
 	private static function createTables(): void {
 		$schema = new Schema();
 		$schema->create();
-		update_option( 'imedia_menu_db_version', VERSION );
+		update_option( 'imedia_menu_db_version', IMEDIA_MENU_VERSION );
 	}
 
 	private static function setDefaults(): void {
@@ -67,7 +67,7 @@ final class Activator {
 		}
 
 		if ( get_option( 'imedia_menu_version' ) === false ) {
-			add_option( 'imedia_menu_version', VERSION );
+			add_option( 'imedia_menu_version', IMEDIA_MENU_VERSION );
 		}
 	}
 }

@@ -22,7 +22,7 @@ final class MigrationServiceProvider implements ServiceProvider {
 	public function checkMigrations(): void {
 		$dbVersion = get_option( 'imedia_menu_db_version', '0.0.0' );
 
-		if ( version_compare( $dbVersion, VERSION, '<' ) ) {
+		if ( version_compare( $dbVersion, IMEDIA_MENU_VERSION, '<' ) ) {
 			$this->runner->run();
 		}
 	}

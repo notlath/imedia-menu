@@ -17,7 +17,7 @@ final class BlockEditorServiceProvider implements ServiceProvider {
 
 	public function registerBlock(): void {
 		register_block_type(
-			DIR . '/assets/blocks/navigation-block',
+			IMEDIA_MENU_DIR . '/assets/blocks/navigation-block',
 			array(
 				'render_callback' => array( $this, 'renderNavigationBlock' ),
 			)

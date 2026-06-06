@@ -15,7 +15,7 @@ final class CacheKeyBuilder {
 			'page_id'   => $this->getPageId(),
 			'page_type' => $this->getPageType(),
 			'locale'    => get_locale(),
-			'version'   => VERSION,
+			'version'   => IMEDIA_MENU_VERSION,
 		);
 
 		$hash = md5( serialize( $components ) );
@@ -33,7 +33,7 @@ final class CacheKeyBuilder {
 			'page_id'      => $this->getPageId(),
 			'page_type'    => $this->getPageType(),
 			'locale'       => get_locale(),
-			'version'      => VERSION,
+			'version'      => IMEDIA_MENU_VERSION,
 		);
 
 		$hash = md5( serialize( $components ) );

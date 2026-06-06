@@ -19,7 +19,7 @@ final class TemplateServiceProvider implements ServiceProvider {
 
 		$child  = sprintf( '%s/imedia-menu/%s', get_stylesheet_directory(), $templateName );
 		$parent = sprintf( '%s/imedia-menu/%s', get_template_directory(), $templateName );
-		$plugin = DIR . '/src/Templates/' . $templateName;
+		$plugin = IMEDIA_MENU_DIR . '/src/Templates/' . $templateName;
 
 		if ( file_exists( $child ) ) {
 			return $child;

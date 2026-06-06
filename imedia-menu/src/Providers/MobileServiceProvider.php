@@ -26,17 +26,17 @@ final class MobileServiceProvider implements ServiceProvider {
 
 		wp_enqueue_style(
 			'imm-mobile',
-			URL . 'assets/frontend/css/imm-mobile.css',
+			IMEDIA_MENU_URL . 'assets/frontend/css/imm-mobile.css',
 			array( 'imm-base' ),
-			VERSION,
+			IMEDIA_MENU_VERSION,
 			sprintf( '(max-width: %dpx)', $bp )
 		);
 
 		wp_enqueue_script(
 			'imm-mobile',
-			URL . 'assets/frontend/js/imm-mobile.js',
+			IMEDIA_MENU_URL . 'assets/frontend/js/imm-mobile.js',
 			array( 'imm' ),
-			VERSION,
+			IMEDIA_MENU_VERSION,
 			true
 		);
 

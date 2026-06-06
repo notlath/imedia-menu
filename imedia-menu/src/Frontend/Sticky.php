@@ -20,9 +20,9 @@ final class Sticky {
 
 		wp_enqueue_script(
 			'imm-sticky',
-			URL . 'assets/frontend/js/imm-sticky.js',
+			IMEDIA_MENU_URL . 'assets/frontend/js/imm-sticky.js',
 			array( 'imm' ),
-			VERSION,
+			IMEDIA_MENU_VERSION,
 			true
 		);
 	}

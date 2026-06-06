@@ -24,6 +24,9 @@ final class RestApiServiceProvider implements ServiceProvider {
 		$this->registerSettingsRoutes();
 		$this->registerSettingLocationRoutes();
 		$this->registerCacheRoutes();
+		$this->registerExportImportRoutes();
+		$this->registerIconRoutes();
+		$this->registerContentRoutes();
 	}
 
 	private function registerMenuRoutes(): void {
@@ -292,6 +295,223 @@ final class RestApiServiceProvider implements ServiceProvider {
 				'permission_callback' => array( $this, 'checkPermission' ),
 			)
 		);
+	}
+
+	private function registerExportImportRoutes(): void {
+		register_rest_route(
+			'imedia-menu/v1',
+			'/export',
+			array(
+				'methods'             => \WP_REST_Server::CREATABLE,
+				'callback'            => array( $this, 'exportData' ),
+				'permission_callback' => array( $this, 'checkPermission' ),
+			)
+		);
+
+		register_rest_route(
+			'imedia-menu/v1',
+			'/import',
+			array(
+				'methods'             => \WP_REST_Server::CREATABLE,
+				'callback'            => array( $this, 'importData' ),
+				'permission_callback' => array( $this, 'checkPermission' ),
+			)
+		);
+	}
+
+	private function registerIconRoutes(): void {
+		register_rest_route(
+			'imedia-menu/v1',
+			'/icons',
+			array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'getIcons' ),
+				'permission_callback' => array( $this, 'checkPermission' ),
+			)
+		);
+
+		register_rest_route(
+			'imedia-menu/v1',
+			'/icons/svg',
+			array(
+				'methods'             => \WP_REST_Server::CREATABLE,
+				'callback'            => array( $this, 'uploadSvgIcon' ),
+				'permission_callback' => array( $this, 'checkPermission' ),
+			)
+		);
+	}
+
+	private function registerContentRoutes(): void {
+		register_rest_route(
+			'imedia-menu/v1',
+			'/content/posts',
+			array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'queryPosts' ),
+				'permission_callback' => array( $this, 'checkPermission' ),
+			)
+		);
+
+		register_rest_route(
+			'imedia-menu/v1',
+			'/content/taxonomies',
+			array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'queryTaxonomies' ),
+				'permission_callback' => array( $this, 'checkPermission' ),
+			)
+		);
+	}
+
+	public function exportData(): \WP_REST_Response {
+		$exporter = new \IMedia\Menu\Export\Exporter();
+		$data     = $exporter->export();
+
+		return new \WP_REST_Response( $data, 200 );
+	}
+
+	public function importData( \WP_REST_Request $request ): \WP_REST_Response {
+		$body     = $request->get_json_params();
+		$importer = new \IMedia\Menu\Export\Importer();
+
+		if ( isset( $body['json'] ) ) {
+			$result = $importer->importFromJson( $body['json'] );
+		} else {
+			$result = $importer->import( $body );
+		}
+
+		return new \WP_REST_Response( $result, empty( $result['errors'] ) ? 200 : 400 );
+	}
+
+	public function getIcons(): \WP_REST_Response {
+		$settings = get_option( 'imedia_menu_settings', array() );
+		$manager  = new \IMedia\Menu\Icons\IconManager();
+
+		$enabledProviders = $settings['icon_providers'] ?? array( 'dashicons' );
+
+		if ( in_array( 'dashicons', $enabledProviders, true ) ) {
+			$manager->register( new \IMedia\Menu\Icons\Providers\DashiconsProvider() );
+		}
+
+		if ( in_array( 'fontawesome', $enabledProviders, true ) ) {
+			$manager->register( new \IMedia\Menu\Icons\Providers\FontAwesomeProvider() );
+		}
+
+		if ( in_array( 'custom_svg', $enabledProviders, true ) ) {
+			$manager->register( new \IMedia\Menu\Icons\Providers\CustomSvgProvider() );
+		}
+
+		return new \WP_REST_Response( $manager->getAvailableIcons(), 200 );
+	}
+
+	public function uploadSvgIcon( \WP_REST_Request $request ): \WP_REST_Response {
+		$files = $request->get_file_params();
+
+		if ( empty( $files['file'] ) || ! isset( $files['file']['tmp_name'] ) ) {
+			return new \WP_REST_Response( array( 'error' => __( 'No file provided.', 'imedia-menu' ) ), 400 );
+		}
+
+		$file       = $files['file'];
+		$mimeType   = $file['type'] ?? '';
+		$extension  = strtolower( pathinfo( $file['name'], PATHINFO_EXTENSION ) );
+
+		if ( $extension !== 'svg' || ( $mimeType !== 'image/svg+xml' && strpos( $mimeType, 'svg' ) === false ) ) {
+			return new \WP_REST_Response( array( 'error' => __( 'Only SVG files are allowed.', 'imedia-menu' ) ), 400 );
+		}
+
+		$provider    = new \IMedia\Menu\Icons\Providers\CustomSvgProvider();
+		$attachmentId = $provider->uploadSvg( $file['tmp_name'] );
+
+		if ( $attachmentId === null ) {
+			return new \WP_REST_Response( array( 'error' => __( 'Failed to upload SVG.', 'imedia-menu' ) ), 500 );
+		}
+
+		return new \WP_REST_Response(
+			array(
+				'id'    => $attachmentId,
+				'title' => get_the_title( $attachmentId ),
+				'url'   => wp_get_attachment_url( $attachmentId ),
+			),
+			201
+		);
+	}
+
+	public function queryPosts( \WP_REST_Request $request ): \WP_REST_Response {
+		$search    = sanitize_text_field( $request->get_param( 'search' ) ?? '' );
+		$postType  = sanitize_text_field( $request->get_param( 'post_type' ) ?? 'any' );
+		$perPage   = min( (int) ( $request->get_param( 'per_page' ) ?? 20 ), 100 );
+
+		$args = array(
+			'post_type'      => $postType === 'any' ? array() : $postType,
+			'posts_per_page' => $perPage,
+			'post_status'    => 'publish',
+			'orderby'        => 'title',
+			'order'          => 'ASC',
+			'no_found_rows'  => true,
+		);
+
+		if ( $search !== '' ) {
+			$args['s'] = $search;
+		}
+
+		if ( $postType === 'any' ) {
+			$args['post_type'] = array();
+		}
+
+		$query  = new \WP_Query( $args );
+		$posts  = $query->posts;
+		$result = array();
+
+		foreach ( $posts as $post ) {
+			$result[] = array(
+				'id'        => $post->ID,
+				'title'     => $post->post_title,
+				'post_type' => $post->post_type,
+				'date'      => $post->post_date,
+			);
+		}
+
+		return new \WP_REST_Response( $result, 200 );
+	}
+
+	public function queryTaxonomies( \WP_REST_Request $request ): \WP_REST_Response {
+		$search     = sanitize_text_field( $request->get_param( 'search' ) ?? '' );
+		$taxonomy   = sanitize_text_field( $request->get_param( 'taxonomy' ) ?? '' );
+		$perPage    = min( (int) ( $request->get_param( 'per_page' ) ?? 20 ), 100 );
+
+		$args = array(
+			'number'     => $perPage,
+			'orderby'    => 'name',
+			'order'      => 'ASC',
+			'hide_empty' => false,
+		);
+
+		if ( $taxonomy !== '' ) {
+			$args['taxonomy'] = $taxonomy;
+		}
+
+		if ( $search !== '' ) {
+			$args['search'] = $search;
+		}
+
+		$terms  = get_terms( $args );
+		$result = array();
+
+		if ( is_wp_error( $terms ) ) {
+			return new \WP_REST_Response( array(), 200 );
+		}
+
+		foreach ( $terms as $term ) {
+			$result[] = array(
+				'id'       => $term->term_id,
+				'name'     => $term->name,
+				'slug'     => $term->slug,
+				'taxonomy' => $term->taxonomy,
+				'count'    => $term->count,
+			);
+		}
+
+		return new \WP_REST_Response( $result, 200 );
 	}
 
 	public function checkPermission(): bool {

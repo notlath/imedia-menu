@@ -8,7 +8,7 @@
 define('ABSPATH', '/tmp/wordpress/');
 define('WP_CONTENT_DIR', '/tmp/wordpress/wp-content');
 define('WP_PLUGIN_DIR', '/tmp/wordpress/wp-content/plugins');
-define('VERSION', '1.0.0');
+define('IMEDIA_MENU_VERSION', '1.0.0');
 define('DB_VERSION', 100);
 define('MIN_PHP_VERSION', '8.1');
 define('MIN_WP_VERSION', '6.4');
