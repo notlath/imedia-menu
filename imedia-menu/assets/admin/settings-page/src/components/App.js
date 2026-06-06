@@ -13,7 +13,10 @@ import { fetchSettings, saveSettings } from '../api/settings';
 import SettingsHeader from './SettingsHeader';
 import GeneralTab from './GeneralTab';
 import DesignTab from './DesignTab';
+import AnimationsTab from './AnimationsTab';
 import MobileTab from './MobileTab';
+import VisibilityTab from './VisibilityTab';
+import IconsTab from './IconsTab';
 import PerformanceTab from './PerformanceTab';
 import AdvancedTab from './AdvancedTab';
 import LocationTab from './LocationTab';
@@ -21,7 +24,10 @@ import LocationTab from './LocationTab';
 const TABS = [
     { id: 'general', label: __('General', 'imedia-menu'), Component: GeneralTab },
     { id: 'design', label: __('Design', 'imedia-menu'), Component: DesignTab },
+    { id: 'animations', label: __('Animations', 'imedia-menu'), Component: AnimationsTab },
     { id: 'mobile', label: __('Mobile', 'imedia-menu'), Component: MobileTab },
+    { id: 'visibility', label: __('Visibility', 'imedia-menu'), Component: VisibilityTab },
+    { id: 'icons', label: __('Icons', 'imedia-menu'), Component: IconsTab },
     { id: 'performance', label: __('Performance', 'imedia-menu'), Component: PerformanceTab },
     { id: 'advanced', label: __('Advanced', 'imedia-menu'), Component: AdvancedTab },
     { id: 'locations', label: __('Location Overrides', 'imedia-menu'), Component: LocationTab },

@@ -31,6 +31,14 @@ final class CacheInvalidator {
 		add_action( 'imedia_menu_settings_saved', array( $this, 'onSettingsSaved' ) );
 		add_action( 'imedia_menu_panel_saved', array( $this, 'onPanelSaved' ) );
 		add_action( 'switch_theme', array( $this, 'invalidateAll' ) );
+		add_action( 'save_post', array( $this, 'onSavePost' ) );
+	}
+
+	public function onSavePost( int $postId ): void {
+		if ( wp_is_post_revision( $postId ) || wp_is_post_autosave( $postId ) ) {
+			return;
+		}
+		$this->invalidateAll();
 	}
 
 	public function onMenuUpdate( int $menuId ): void {

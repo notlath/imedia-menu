@@ -63,7 +63,10 @@ final class SettingsRegistry {
 		$defaults = array(
 			new Tabs\GeneralTab(),
 			new Tabs\DesignTab(),
+			new Tabs\AnimationsTab(),
 			new Tabs\MobileTab(),
+			new Tabs\VisibilityTab(),
+			new Tabs\IconsTab(),
 			new Tabs\PerformanceTab(),
 			new Tabs\AdvancedTab(),
 		);

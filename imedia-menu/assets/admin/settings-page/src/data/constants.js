@@ -27,6 +27,18 @@ export const DEFAULT_SETTINGS = {
     dark_mode_text_hover: '',
     dark_mode_dropdown_bg: '',
     dark_mode_dropdown_border: '',
+    animation_easing: 'ease',
+    reduced_motion: true,
+    visibility_default_behavior: 'show_all',
+    locale_detection_method: 'auto',
+    icon_providers: {
+        dashicons: true,
+        fontawesome: false,
+        custom_svg: false,
+    },
+    fontawesome_source: 'cdn',
+    fontawesome_version: '6.5.1',
+    fontawesome_cdn_url: '',
 };
 
 export const TAB_IDS = {

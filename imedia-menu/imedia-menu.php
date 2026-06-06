@@ -23,13 +23,13 @@ namespace IMedia\Menu;
 
 defined( 'ABSPATH' ) || exit;
 
-const VERSION  = '1.0.0';
-const FILE     = __FILE__;
-const DIR      = __DIR__;
-const URL      = plugin_dir_url( __FILE__ );
-const BASENAME = plugin_basename( __FILE__ );
-const MIN_PHP  = '8.1';
-const MIN_WP   = '6.4';
+define( 'VERSION', '1.0.0' );
+define( 'FILE', __FILE__ );
+define( 'DIR', __DIR__ );
+define( 'URL', plugin_dir_url( __FILE__ ) );
+define( 'BASENAME', plugin_basename( __FILE__ ) );
+define( 'MIN_PHP', '8.1' );
+define( 'MIN_WP', '6.4' );
 
 if ( version_compare( PHP_VERSION, MIN_PHP, '<' ) ) {
 	add_action(

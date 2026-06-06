@@ -47,14 +47,16 @@ final class FrontendServiceProvider implements ServiceProvider {
 
 		$walker = new MenuWalker( $menuId, $mergedSettings );
 
-		$cache    = new MenuCache();
-		$cacheKey = null;
-		$cached   = $cache->getMenuHtml( $menuId, $cacheKey );
+		$cache        = new MenuCache();
+		$cacheKey     = null;
+		$cached       = $cache->getMenuHtml( $menuId, $cacheKey );
+		$fromCache    = $cached !== null;
+		$cacheEnabled = $mergedSettings['enable_caching'] ?? true;
 
-		if ( $cached !== null ) {
+		if ( $fromCache && $cacheEnabled ) {
 			add_filter(
 				'wp_nav_menu',
-				function ( string $navHtml, object $navArgs ) use ( $cached, $cacheKey ): string {
+				function ( string $navHtml, object $navArgs ) use ( $cached ): string {
 					if ( isset( $navArgs->walker ) && $navArgs->walker instanceof MenuWalker ) {
 						return $cached;
 					}
@@ -80,7 +82,7 @@ final class FrontendServiceProvider implements ServiceProvider {
 
 		add_filter(
 			'wp_nav_menu',
-			function ( string $navHtml, object $navArgs ) use ( $mergedSettings, $walker ): string {
+			function ( string $navHtml, object $navArgs ) use ( $mergedSettings, $walker, $cache, $menuId, $fromCache, $cacheEnabled ): string {
 				if ( ! isset( $navArgs->walker ) || ! $navArgs->walker instanceof MenuWalker ) {
 					return $navHtml;
 				}
@@ -95,7 +97,14 @@ final class FrontendServiceProvider implements ServiceProvider {
 					esc_attr( $animation )
 				);
 
-				return str_replace( '<nav', '<nav' . $dataAttrs, $navHtml );
+				$navHtml = str_replace( '<nav', '<nav' . $dataAttrs, $navHtml );
+
+				if ( $cacheEnabled && ! $fromCache ) {
+					$durationSetting = (int) ( $mergedSettings['cache_duration'] ?? 60 );
+					$cache->setMenuHtml( $menuId, $navHtml, $durationSetting * 60 );
+				}
+
+				return $navHtml;
 			},
 			20,
 			2
