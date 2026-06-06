@@ -6,50 +6,46 @@ namespace IMedia\Menu\Providers;
 
 use IMedia\Menu\Contracts\ServiceProvider;
 
-final class TemplateServiceProvider implements ServiceProvider
-{
-    public function register(): void
-    {
-    }
+final class TemplateServiceProvider implements ServiceProvider {
 
-    public function boot(): void
-    {
-    }
+	public function register(): void {
+	}
 
-    public function locateTemplate(string $templateName): string
-    {
-        $templateName = ltrim($templateName, '/');
+	public function boot(): void {
+	}
 
-        $child  = sprintf('%s/imedia-menu/%s', get_stylesheet_directory(), $templateName);
-        $parent = sprintf('%s/imedia-menu/%s', get_template_directory(), $templateName);
-        $plugin = DIR . '/src/Templates/' . $templateName;
+	public function locateTemplate( string $templateName ): string {
+		$templateName = ltrim( $templateName, '/' );
 
-        if (file_exists($child)) {
-            return $child;
-        }
+		$child  = sprintf( '%s/imedia-menu/%s', get_stylesheet_directory(), $templateName );
+		$parent = sprintf( '%s/imedia-menu/%s', get_template_directory(), $templateName );
+		$plugin = DIR . '/src/Templates/' . $templateName;
 
-        if (file_exists($parent)) {
-            return $parent;
-        }
+		if ( file_exists( $child ) ) {
+			return $child;
+		}
 
-        return $plugin;
-    }
+		if ( file_exists( $parent ) ) {
+			return $parent;
+		}
 
-    public function render(string $templateName, array $args = []): string
-    {
-        $path = $this->locateTemplate($templateName . '.php');
+		return $plugin;
+	}
 
-        if (!file_exists($path)) {
-            return sprintf('<!-- Template not found: %s -->', esc_html($templateName));
-        }
+	public function render( string $templateName, array $args = array() ): string {
+		$path = $this->locateTemplate( $templateName . '.php' );
 
-        $path = apply_filters('imedia_menu_template_path', $path, $templateName);
-        $args = apply_filters('imedia_menu_template_args', $args, $templateName);
+		if ( ! file_exists( $path ) ) {
+			return sprintf( '<!-- Template not found: %s -->', esc_html( $templateName ) );
+		}
 
-        ob_start();
-        extract($args, EXTR_SKIP); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract
-        require $path;
+		$path = apply_filters( 'imedia_menu_template_path', $path, $templateName );
+		$args = apply_filters( 'imedia_menu_template_args', $args, $templateName );
 
-        return (string) ob_get_clean();
-    }
+		ob_start();
+		extract( $args, EXTR_SKIP ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract
+		require $path;
+
+		return (string) ob_get_clean();
+	}
 }

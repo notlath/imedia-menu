@@ -4,102 +4,98 @@ declare(strict_types=1);
 
 namespace IMedia\Menu\Database;
 
-final class TemplateRepository
-{
-    private string $table;
+final class TemplateRepository {
 
-    public function __construct()
-    {
-        global $wpdb;
-        $this->table = $wpdb->prefix . Schema::TEMPLATES_TABLE;
-    }
+	private string $table;
 
-    public function findAll(): array
-    {
-        global $wpdb;
+	public function __construct() {
+		global $wpdb;
+		$this->table = $wpdb->prefix . Schema::TEMPLATES_TABLE;
+	}
 
-        $rows = $wpdb->get_results(
-            "SELECT * FROM {$this->table} ORDER BY name ASC"
-        );
+	public function findAll(): array {
+		global $wpdb;
 
-        return array_map([$this, 'hydrate'], $rows);
-    }
+		$rows = $wpdb->get_results(
+			"SELECT * FROM {$this->table} ORDER BY name ASC"
+		);
 
-    public function findById(int $id): ?object
-    {
-        global $wpdb;
+		return array_map( array( $this, 'hydrate' ), $rows );
+	}
 
-        $row = $wpdb->get_row(
-            $wpdb->prepare(
-                "SELECT * FROM {$this->table} WHERE id = %d",
-                $id
-            )
-        );
+	public function findById( int $id ): ?object {
+		global $wpdb;
 
-        return $row ? $this->hydrate($row) : null;
-    }
+		$row = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT * FROM {$this->table} WHERE id = %d",
+				$id
+			)
+		);
 
-    public function create(array $data): ?int
-    {
-        global $wpdb;
+		return $row ? $this->hydrate( $row ) : null;
+	}
 
-        $result = $wpdb->insert($this->table, [
-            'name'        => sanitize_text_field($data['name']),
-            'description' => isset($data['description']) ? sanitize_textarea_field($data['description']) : null,
-            'config'      => wp_json_encode($data['config'] ?? []),
-            'styles'      => isset($data['styles']) ? wp_json_encode($data['styles']) : null,
-            'meta'        => isset($data['meta']) ? wp_json_encode($data['meta']) : null,
-        ]);
+	public function create( array $data ): ?int {
+		global $wpdb;
 
-        return $result ? (int) $wpdb->insert_id : null;
-    }
+		$result = $wpdb->insert(
+			$this->table,
+			array(
+				'name'        => sanitize_text_field( $data['name'] ),
+				'description' => isset( $data['description'] ) ? sanitize_textarea_field( $data['description'] ) : null,
+				'config'      => wp_json_encode( $data['config'] ?? array() ),
+				'styles'      => isset( $data['styles'] ) ? wp_json_encode( $data['styles'] ) : null,
+				'meta'        => isset( $data['meta'] ) ? wp_json_encode( $data['meta'] ) : null,
+			)
+		);
 
-    public function update(int $id, array $data): bool
-    {
-        global $wpdb;
+		return $result ? (int) $wpdb->insert_id : null;
+	}
 
-        $fields = [];
+	public function update( int $id, array $data ): bool {
+		global $wpdb;
 
-        if (isset($data['name'])) {
-            $fields['name'] = sanitize_text_field($data['name']);
-        }
+		$fields = array();
 
-        if (isset($data['description'])) {
-            $fields['description'] = sanitize_textarea_field($data['description']);
-        }
+		if ( isset( $data['name'] ) ) {
+			$fields['name'] = sanitize_text_field( $data['name'] );
+		}
 
-        if (isset($data['config'])) {
-            $fields['config'] = wp_json_encode($data['config']);
-        }
+		if ( isset( $data['description'] ) ) {
+			$fields['description'] = sanitize_textarea_field( $data['description'] );
+		}
 
-        if (isset($data['styles'])) {
-            $fields['styles'] = wp_json_encode($data['styles']);
-        }
+		if ( isset( $data['config'] ) ) {
+			$fields['config'] = wp_json_encode( $data['config'] );
+		}
 
-        if (isset($data['meta'])) {
-            $fields['meta'] = wp_json_encode($data['meta']);
-        }
+		if ( isset( $data['styles'] ) ) {
+			$fields['styles'] = wp_json_encode( $data['styles'] );
+		}
 
-        if (empty($fields)) {
-            return false;
-        }
+		if ( isset( $data['meta'] ) ) {
+			$fields['meta'] = wp_json_encode( $data['meta'] );
+		}
 
-        return $wpdb->update($this->table, $fields, ['id' => $id]) !== false;
-    }
+		if ( empty( $fields ) ) {
+			return false;
+		}
 
-    public function delete(int $id): bool
-    {
-        global $wpdb;
+		return $wpdb->update( $this->table, $fields, array( 'id' => $id ) ) !== false;
+	}
 
-        return $wpdb->delete($this->table, ['id' => $id]) !== false;
-    }
+	public function delete( int $id ): bool {
+		global $wpdb;
 
-    private function hydrate(object $row): object
-    {
-        $row->config = json_decode($row->config, true);
-        $row->styles = $row->styles ? json_decode($row->styles, true) : null;
-        $row->meta   = $row->meta ? json_decode($row->meta, true) : null;
+		return $wpdb->delete( $this->table, array( 'id' => $id ) ) !== false;
+	}
 
-        return $row;
-    }
+	private function hydrate( object $row ): object {
+		$row->config = json_decode( $row->config, true );
+		$row->styles = $row->styles ? json_decode( $row->styles, true ) : null;
+		$row->meta   = $row->meta ? json_decode( $row->meta, true ) : null;
+
+		return $row;
+	}
 }

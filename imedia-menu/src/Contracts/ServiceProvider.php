@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace IMedia\Menu\Contracts;
 
-interface ServiceProvider
-{
-    public function register(): void;
+interface ServiceProvider {
 
-    public function boot(): void;
+	public function register(): void;
+
+	public function boot(): void;
 }

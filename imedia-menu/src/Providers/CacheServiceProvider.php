@@ -8,36 +8,32 @@ use IMedia\Menu\Contracts\ServiceProvider;
 use IMedia\Menu\Cache\MenuCache;
 use IMedia\Menu\Cache\CacheInvalidator;
 
-final class CacheServiceProvider implements ServiceProvider
-{
-    private MenuCache $cache;
-    private CacheInvalidator $invalidator;
+final class CacheServiceProvider implements ServiceProvider {
 
-    public function register(): void
-    {
-        $this->cache       = new MenuCache();
-        $this->invalidator = new CacheInvalidator();
-    }
+	private MenuCache $cache;
+	private CacheInvalidator $invalidator;
 
-    public function boot(): void
-    {
-        $settings = get_option('imedia_menu_settings', []);
-        $enabled  = $settings['enable_caching'] ?? true;
+	public function register(): void {
+		$this->cache       = new MenuCache();
+		$this->invalidator = new CacheInvalidator();
+	}
 
-        if (!$enabled) {
-            return;
-        }
+	public function boot(): void {
+		$settings = get_option( 'imedia_menu_settings', array() );
+		$enabled  = $settings['enable_caching'] ?? true;
 
-        $this->invalidator->registerHooks();
-    }
+		if ( ! $enabled ) {
+			return;
+		}
 
-    public function getCache(): MenuCache
-    {
-        return $this->cache;
-    }
+		$this->invalidator->registerHooks();
+	}
 
-    public function getInvalidator(): CacheInvalidator
-    {
-        return $this->invalidator;
-    }
+	public function getCache(): MenuCache {
+		return $this->cache;
+	}
+
+	public function getInvalidator(): CacheInvalidator {
+		return $this->invalidator;
+	}
 }

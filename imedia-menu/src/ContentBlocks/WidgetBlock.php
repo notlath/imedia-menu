@@ -6,43 +6,39 @@ namespace IMedia\Menu\ContentBlocks;
 
 use IMedia\Menu\Contracts\ContentBlock;
 
-final class WidgetBlock implements ContentBlock
-{
-    public function type(): string
-    {
-        return 'widget';
-    }
+final class WidgetBlock implements ContentBlock {
 
-    public function title(): string
-    {
-        return __('Widget Area', 'imedia-menu');
-    }
+	public function type(): string {
+		return 'widget';
+	}
 
-    public function render(array $config, array $styles = []): string
-    {
-        $widgetArea = $config['widget_area'] ?? '';
+	public function title(): string {
+		return __( 'Widget Area', 'imedia-menu' );
+	}
 
-        if (empty($widgetArea) || !is_active_sidebar($widgetArea)) {
-            return sprintf(
-                '<div class="imm-block imm-block--widget"><p class="imm-empty">%s</p></div>',
-                esc_html__('Select a widget area', 'imedia-menu')
-            );
-        }
+	public function render( array $config, array $styles = array() ): string {
+		$widgetArea = $config['widget_area'] ?? '';
 
-        ob_start();
-        dynamic_sidebar($widgetArea);
-        $sidebarHtml = ob_get_clean();
+		if ( empty( $widgetArea ) || ! is_active_sidebar( $widgetArea ) ) {
+			return sprintf(
+				'<div class="imm-block imm-block--widget"><p class="imm-empty">%s</p></div>',
+				esc_html__( 'Select a widget area', 'imedia-menu' )
+			);
+		}
 
-        return sprintf(
-            '<div class="imm-block imm-block--widget">%s</div>',
-            $sidebarHtml
-        );
-    }
+		ob_start();
+		dynamic_sidebar( $widgetArea );
+		$sidebarHtml = ob_get_clean();
 
-    public function defaultConfig(): array
-    {
-        return [
-            'widget_area' => '',
-        ];
-    }
+		return sprintf(
+			'<div class="imm-block imm-block--widget">%s</div>',
+			$sidebarHtml
+		);
+	}
+
+	public function defaultConfig(): array {
+		return array(
+			'widget_area' => '',
+		);
+	}
 }

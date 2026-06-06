@@ -44,6 +44,6 @@ Desktop.ini
 *.swo
 *~
 
-# Build artifacts
-build/
-dist/
+# Build artifacts (root only - subdirectory builds like assets/admin/*/build/ are committed)
+/build/
+/dist/

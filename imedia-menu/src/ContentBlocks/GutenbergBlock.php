@@ -6,48 +6,46 @@ namespace IMedia\Menu\ContentBlocks;
 
 use IMedia\Menu\Contracts\ContentBlock;
 
-final class GutenbergBlock implements ContentBlock
-{
-    public function type(): string
-    {
-        return 'gutenberg_block';
-    }
+final class GutenbergBlock implements ContentBlock {
 
-    public function title(): string
-    {
-        return __('Gutenberg Block', 'imedia-menu');
-    }
+	public function type(): string {
+		return 'gutenberg_block';
+	}
 
-    public function render(array $config, array $styles = []): string
-    {
-        $blockName = $config['block_name'] ?? '';
-        $blockAttrs = $config['block_attrs'] ?? [];
+	public function title(): string {
+		return __( 'Gutenberg Block', 'imedia-menu' );
+	}
 
-        if (empty($blockName)) {
-            return sprintf(
-                '<div class="imm-block imm-block--gutenberg"><p class="imm-empty">%s</p></div>',
-                esc_html__('Select a Gutenberg block', 'imedia-menu')
-            );
-        }
+	public function render( array $config, array $styles = array() ): string {
+		$blockName  = $config['block_name'] ?? '';
+		$blockAttrs = $config['block_attrs'] ?? array();
 
-        $rendered = render_block([
-            'blockName'    => $blockName,
-            'attrs'        => $blockAttrs,
-            'innerContent' => $config['inner_content'] ?? [],
-        ]);
+		if ( empty( $blockName ) ) {
+			return sprintf(
+				'<div class="imm-block imm-block--gutenberg"><p class="imm-empty">%s</p></div>',
+				esc_html__( 'Select a Gutenberg block', 'imedia-menu' )
+			);
+		}
 
-        return sprintf(
-            '<div class="imm-block imm-block--gutenberg">%s</div>',
-            $rendered
-        );
-    }
+		$rendered = render_block(
+			array(
+				'blockName'    => $blockName,
+				'attrs'        => $blockAttrs,
+				'innerContent' => $config['inner_content'] ?? array(),
+			)
+		);
 
-    public function defaultConfig(): array
-    {
-        return [
-            'block_name'    => '',
-            'block_attrs'   => [],
-            'inner_content' => [],
-        ];
-    }
+		return sprintf(
+			'<div class="imm-block imm-block--gutenberg">%s</div>',
+			$rendered
+		);
+	}
+
+	public function defaultConfig(): array {
+		return array(
+			'block_name'    => '',
+			'block_attrs'   => array(),
+			'inner_content' => array(),
+		);
+	}
 }

@@ -6,116 +6,119 @@ namespace IMedia\Menu\Providers;
 
 use IMedia\Menu\Contracts\ServiceProvider;
 
-final class BlockEditorServiceProvider implements ServiceProvider
-{
-    public function register(): void
-    {
-    }
+final class BlockEditorServiceProvider implements ServiceProvider {
 
-    public function boot(): void
-    {
-        add_action('init', [$this, 'registerBlock']);
-    }
+	public function register(): void {
+	}
 
-    public function registerBlock(): void
-    {
-        register_block_type(DIR . '/assets/blocks/navigation-block', [
-            'render_callback' => [$this, 'renderNavigationBlock'],
-        ]);
-    }
+	public function boot(): void {
+		add_action( 'init', array( $this, 'registerBlock' ) );
+	}
 
-    public function renderNavigationBlock(array $attributes, string $content): string
-    {
-        $menuId = $attributes['menuId'] ?? 0;
-        $className = $attributes['className'] ?? '';
+	public function registerBlock(): void {
+		register_block_type(
+			DIR . '/assets/blocks/navigation-block',
+			array(
+				'render_callback' => array( $this, 'renderNavigationBlock' ),
+			)
+		);
+	}
 
-        if ($menuId === 0) {
-            return sprintf(
-                '<nav class="%s"><p>%s</p></nav>',
-                esc_attr($className),
-                esc_html__('Select a menu in the block settings.', 'imedia-menu')
-            );
-        }
+	public function renderNavigationBlock( array $attributes, string $content ): string {
+		$menuId    = $attributes['menuId'] ?? 0;
+		$className = $attributes['className'] ?? '';
 
-        $menu = wp_get_nav_menu_object($menuId);
+		if ( $menuId === 0 ) {
+			return sprintf(
+				'<nav class="%s"><p>%s</p></nav>',
+				esc_attr( $className ),
+				esc_html__( 'Select a menu in the block settings.', 'imedia-menu' )
+			);
+		}
 
-        if (!$menu) {
-            return sprintf(
-                '<nav class="%s"><p>%s</p></nav>',
-                esc_attr($className),
-                esc_html__('Menu not found.', 'imedia-menu')
-            );
-        }
+		$menu = wp_get_nav_menu_object( $menuId );
 
-        $args = [
-            'menu'           => $menuId,
-            'menu_class'     => 'imm-menu',
-            'container'      => 'nav',
-            'container_class' => 'imm-nav ' . $className,
-            'container_aria_label' => $menu->name,
-            'fallback_cb'    => false,
-            'walker'         => new \IMedia\Menu\Frontend\MenuWalker($menuId),
-        ];
+		if ( ! $menu ) {
+			return sprintf(
+				'<nav class="%s"><p>%s</p></nav>',
+				esc_attr( $className ),
+				esc_html__( 'Menu not found.', 'imedia-menu' )
+			);
+		}
 
-        add_filter('wp_nav_menu_items', [$this, 'maybePrependMobileToggle'], 10, 2);
+		$args = array(
+			'menu'                 => $menuId,
+			'menu_class'           => 'imm-menu',
+			'container'            => 'nav',
+			'container_class'      => 'imm-nav ' . $className,
+			'container_aria_label' => $menu->name,
+			'fallback_cb'          => false,
+			'walker'               => new \IMedia\Menu\Frontend\MenuWalker( $menuId ),
+		);
 
-        ob_start();
-        wp_nav_menu($args);
-        $menuHtml = ob_get_clean();
+		add_filter( 'wp_nav_menu_items', array( $this, 'maybePrependMobileToggle' ), 10, 2 );
 
-        remove_filter('wp_nav_menu_items', [$this, 'maybePrependMobileToggle'], 10);
+		ob_start();
+		wp_nav_menu( $args );
+		$menuHtml = ob_get_clean();
 
-        $menuHtml = $this->wrapMenu($menuHtml, $menuId, $menu->name);
+		remove_filter( 'wp_nav_menu_items', array( $this, 'maybePrependMobileToggle' ), 10 );
 
-        return $menuHtml;
-    }
+		$menuHtml = $this->wrapMenu( $menuHtml, $menuId, $menu->name );
 
-    public function maybePrependMobileToggle(string $items, object $args): string
-    {
-        if (str_contains($args->container_class ?? '', 'imm-nav')) {
-            $toggle = sprintf(
-                '<button class="imm-mobile-toggle" aria-expanded="false" aria-controls="imm-menu-%d" aria-label="%s">
+		return $menuHtml;
+	}
+
+	public function maybePrependMobileToggle( string $items, object $args ): string {
+		if ( str_contains( $args->container_class ?? '', 'imm-nav' ) ) {
+			$toggle = sprintf(
+				'<button class="imm-mobile-toggle" aria-expanded="false" aria-controls="imm-menu-%d" aria-label="%s">
                     <span class="imm-hamburger"><span></span><span></span><span></span></span>
                 </button>',
-                $args->menu->term_id ?? 0,
-                esc_attr__('Toggle navigation menu', 'imedia-menu')
-            );
-            $items = $toggle . $items;
-        }
+				$args->menu->term_id ?? 0,
+				esc_attr__( 'Toggle navigation menu', 'imedia-menu' )
+			);
+			$items  = $toggle . $items;
+		}
 
-        return $items;
-    }
+		return $items;
+	}
 
-    private function wrapMenu(string $menuHtml, int $menuId, string $menuName): string
-    {
-        $settings = get_option('imedia_menu_settings', []);
-        $trigger  = $settings['trigger_type'] ?? 'hover';
-        $delay    = (int) ($settings['hover_delay'] ?? 200);
+	private function wrapMenu( string $menuHtml, int $menuId, string $menuName ): string {
+		$settings = get_option( 'imedia_menu_settings', array() );
+		$trigger  = $settings['trigger_type'] ?? 'hover';
+		$delay    = (int) ( $settings['hover_delay'] ?? 200 );
 
-        $style = '';
-        $cssVars = [];
+		$style   = '';
+		$cssVars = array();
 
-        if (!empty($settings['menu_bar_bg'])) {
-            $cssVars[] = '--imm-bg:' . $settings['menu_bar_bg'];
-        }
-        if (!empty($settings['menu_text_color'])) {
-            $cssVars[] = '--imm-text:' . $settings['menu_text_color'];
-        }
+		if ( ! empty( $settings['menu_bar_bg'] ) ) {
+			$cssVars[] = '--imm-bg:' . $settings['menu_bar_bg'];
+		}
+		if ( ! empty( $settings['menu_text_color'] ) ) {
+			$cssVars[] = '--imm-text:' . $settings['menu_text_color'];
+		}
 
-        if (!empty($cssVars)) {
-            $style = ' style="' . esc_attr(implode(';', $cssVars)) . '"';
-        }
+		if ( ! empty( $cssVars ) ) {
+			$style = ' style="' . esc_attr( implode( ';', $cssVars ) ) . '"';
+		}
 
-        $search = '<nav';
-        $replace = sprintf(
-            '<nav data-trigger="%s" data-hover-delay="%d"%s',
-            esc_attr($trigger),
-            $delay,
-            $style
-        );
+		$search  = '<nav';
+		$replace = sprintf(
+			'<nav data-trigger="%s" data-hover-delay="%d"%s',
+			esc_attr( $trigger ),
+			$delay,
+			$style
+		);
 
-        $menuHtml = str_replace($search, $replace, $menuHtml);
+		$menuHtml = str_replace( $search, $replace, $menuHtml );
 
-        return $menuHtml;
-    }
+		$menuHtml = str_replace(
+			'class="imm-menu">',
+			'class="imm-menu" role="menubar">',
+			$menuHtml
+		);
+
+		return $menuHtml;
+	}
 }

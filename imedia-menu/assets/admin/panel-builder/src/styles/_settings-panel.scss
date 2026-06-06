@@ -1,0 +1,205 @@
+.imm-settings-sidebar {
+    width: 320px;
+    min-width: 320px;
+    background: $builder-surface;
+    border-left: 1px solid $builder-border;
+    overflow-y: auto;
+}
+
+.imm-settings-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+    color: $builder-text-muted;
+    font-size: 13px;
+    gap: 12px;
+}
+
+.imm-settings-panel {
+    padding: 0;
+}
+
+.imm-settings-panel-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid $builder-border;
+
+    h3 {
+        margin: 0;
+        color: $builder-text;
+        font-size: 14px;
+    }
+}
+
+.imm-settings-tabs {
+    .components-tab-panel__tabs {
+        border-bottom: 1px solid $builder-border;
+        padding: 0 12px;
+        display: flex;
+        gap: 0;
+    }
+
+    .components-tab-panel__tab-content {
+        padding: 16px;
+    }
+}
+
+.imm-settings-tab-content {
+    .components-base-control__label,
+    .imm-field-row label {
+        color: $builder-text-muted;
+        font-size: 12px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        display: block;
+        margin-bottom: 6px;
+    }
+
+    .components-base-control {
+        margin-bottom: 16px;
+    }
+
+    .components-text-control__input,
+    .components-textarea-control__input,
+    .components-select-control__input {
+        background: $builder-bg;
+        border: 1px solid $builder-border;
+        border-radius: $builder-radius-sm;
+        color: $builder-text;
+        padding: 8px 10px;
+        font-size: 13px;
+
+        &:focus {
+            border-color: $builder-accent;
+            box-shadow: 0 0 0 1px $builder-accent;
+        }
+    }
+
+    .components-toggle-control {
+        margin-bottom: 12px;
+    }
+
+    .components-form-toggle.is-checked .components-form-toggle__track {
+        background: $builder-accent;
+    }
+}
+
+.imm-field-group {
+    // Container for grouped fields
+}
+
+.imm-field-row {
+    margin-bottom: 16px;
+
+    label {
+        color: $builder-text-muted;
+        font-size: 12px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        display: block;
+        margin-bottom: 6px;
+    }
+}
+
+.imm-media-upload {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.imm-visibility-settings {
+    .imm-field-description {
+        color: $builder-text-muted;
+        font-size: 12px;
+        margin-bottom: 16px;
+    }
+}
+
+.imm-condition-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid $builder-border;
+    border-radius: $builder-radius-sm;
+    padding: 12px;
+    margin-bottom: 12px;
+}
+
+.imm-condition-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+
+    .components-select-control {
+        flex: 1;
+    }
+}
+
+.imm-add-condition {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid $builder-border;
+}
+
+.imm-styles-panel {
+    padding: 0;
+}
+
+.imm-panel-settings-drawer {
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 340px;
+    background: $builder-surface;
+    border-left: 1px solid $builder-border;
+    z-index: 100;
+    box-shadow: -4px 0 12px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.imm-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid $builder-border;
+
+    h3 {
+        margin: 0;
+        color: $builder-text;
+        font-size: 14px;
+    }
+}
+
+.imm-drawer-close {
+    background: none;
+    border: none;
+    color: $builder-text-muted;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+
+    &:hover {
+        color: $builder-text;
+    }
+}
+
+.imm-drawer-body {
+    padding: 16px;
+    flex: 1;
+    overflow-y: auto;
+
+    hr {
+        border: none;
+        border-top: 1px solid $builder-border;
+        margin: 20px 0;
+    }
+}

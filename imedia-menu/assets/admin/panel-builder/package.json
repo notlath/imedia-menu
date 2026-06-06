@@ -1,0 +1,30 @@
+{
+    "name": "imedia-menu-panel-builder",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "build": "wp-scripts build",
+        "start": "wp-scripts start"
+    },
+    "devDependencies": {
+        "@dnd-kit/core": "^6.1.0",
+        "@dnd-kit/sortable": "^8.0.0",
+        "@dnd-kit/utilities": "^3.2.2",
+        "@wordpress/api-fetch": "^7.4.0",
+        "@wordpress/block-editor": "^13.4.0",
+        "@wordpress/components": "^27.6.0",
+        "@wordpress/data": "^10.4.0",
+        "@wordpress/element": "^6.4.0",
+        "@wordpress/i18n": "^5.4.0",
+        "@wordpress/icons": "^10.4.0",
+        "@wordpress/media-utils": "^5.4.0",
+        "@wordpress/notices": "^5.4.0",
+        "@wordpress/rich-text": "^7.4.0",
+        "@wordpress/scripts": "^27.9.0",
+        "@wordpress/url": "^4.4.0",
+        "uuid": "^9.0.1"
+    },
+    "dependencies": {
+        "ajv": "^8.12.0"
+    }
+}

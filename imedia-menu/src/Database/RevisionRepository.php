@@ -4,81 +4,78 @@ declare(strict_types=1);
 
 namespace IMedia\Menu\Database;
 
-final class RevisionRepository
-{
-    private string $table;
+final class RevisionRepository {
 
-    private const MAX_REVISIONS = 50;
+	private string $table;
 
-    public function __construct()
-    {
-        global $wpdb;
-        $this->table = $wpdb->prefix . Schema::REVISIONS_TABLE;
-    }
+	private const MAX_REVISIONS = 50;
 
-    public function findByPanel(int $panelId, int $limit = 20): array
-    {
-        global $wpdb;
+	public function __construct() {
+		global $wpdb;
+		$this->table = $wpdb->prefix . Schema::REVISIONS_TABLE;
+	}
 
-        $rows = $wpdb->get_results(
-            $wpdb->prepare(
-                "SELECT * FROM {$this->table} WHERE panel_id = %d ORDER BY created_at DESC LIMIT %d",
-                $panelId,
-                $limit
-            )
-        );
+	public function findByPanel( int $panelId, int $limit = 20 ): array {
+		global $wpdb;
 
-        return array_map([$this, 'hydrate'], $rows);
-    }
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT * FROM {$this->table} WHERE panel_id = %d ORDER BY created_at DESC LIMIT %d",
+				$panelId,
+				$limit
+			)
+		);
 
-    public function create(int $panelId, int $menuItemId, array $config, ?array $styles, int $userId): ?int
-    {
-        global $wpdb;
+		return array_map( array( $this, 'hydrate' ), $rows );
+	}
 
-        $result = $wpdb->insert($this->table, [
-            'panel_id'     => $panelId,
-            'menu_item_id' => $menuItemId,
-            'config'       => wp_json_encode($config),
-            'styles'       => $styles ? wp_json_encode($styles) : null,
-            'user_id'      => $userId,
-        ]);
+	public function create( int $panelId, int $menuItemId, array $config, ?array $styles, int $userId ): ?int {
+		global $wpdb;
 
-        if ($result) {
-            $this->enforceLimit($panelId);
-            return (int) $wpdb->insert_id;
-        }
+		$result = $wpdb->insert(
+			$this->table,
+			array(
+				'panel_id'     => $panelId,
+				'menu_item_id' => $menuItemId,
+				'config'       => wp_json_encode( $config ),
+				'styles'       => $styles ? wp_json_encode( $styles ) : null,
+				'user_id'      => $userId,
+			)
+		);
 
-        return null;
-    }
+		if ( $result ) {
+			$this->enforceLimit( $panelId );
+			return (int) $wpdb->insert_id;
+		}
 
-    public function restore(int $revisionId): ?object
-    {
-        global $wpdb;
+		return null;
+	}
 
-        $revision = $wpdb->get_row(
-            $wpdb->prepare(
-                "SELECT * FROM {$this->table} WHERE id = %d",
-                $revisionId
-            )
-        );
+	public function restore( int $revisionId ): ?object {
+		global $wpdb;
 
-        return $revision ? $this->hydrate($revision) : null;
-    }
+		$revision = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT * FROM {$this->table} WHERE id = %d",
+				$revisionId
+			)
+		);
 
-    public function deleteByPanel(int $panelId): bool
-    {
-        global $wpdb;
+		return $revision ? $this->hydrate( $revision ) : null;
+	}
 
-        return $wpdb->delete($this->table, ['panel_id' => $panelId]) !== false;
-    }
+	public function deleteByPanel( int $panelId ): bool {
+		global $wpdb;
 
-    private function enforceLimit(int $panelId): void
-    {
-        global $wpdb;
+		return $wpdb->delete( $this->table, array( 'panel_id' => $panelId ) ) !== false;
+	}
 
-        $wpdb->query(
-            $wpdb->prepare(
-                "DELETE FROM {$this->table}
+	private function enforceLimit( int $panelId ): void {
+		global $wpdb;
+
+		$wpdb->query(
+			$wpdb->prepare(
+				"DELETE FROM {$this->table}
                 WHERE panel_id = %d
                 AND id NOT IN (
                     SELECT id FROM (
@@ -88,18 +85,17 @@ final class RevisionRepository
                         LIMIT %d
                     ) AS keep_ids
                 )",
-                $panelId,
-                $panelId,
-                self::MAX_REVISIONS
-            )
-        );
-    }
+				$panelId,
+				$panelId,
+				self::MAX_REVISIONS
+			)
+		);
+	}
 
-    private function hydrate(object $row): object
-    {
-        $row->config = json_decode($row->config, true);
-        $row->styles = $row->styles ? json_decode($row->styles, true) : null;
+	private function hydrate( object $row ): object {
+		$row->config = json_decode( $row->config, true );
+		$row->styles = $row->styles ? json_decode( $row->styles, true ) : null;
 
-        return $row;
-    }
+		return $row;
+	}
 }

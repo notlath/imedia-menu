@@ -6,78 +6,74 @@ namespace IMedia\Menu\ContentBlocks;
 
 use IMedia\Menu\Contracts\ContentBlock;
 
-final class IconBlock implements ContentBlock
-{
-    public function type(): string
-    {
-        return 'icon';
-    }
+final class IconBlock implements ContentBlock {
 
-    public function title(): string
-    {
-        return __('Icon', 'imedia-menu');
-    }
+	public function type(): string {
+		return 'icon';
+	}
 
-    public function render(array $config, array $styles = []): string
-    {
-        $icon    = $config['icon'] ?? 'dashicons:admin-home';
-        $size    = $config['size'] ?? '24px';
-        $color   = $config['color'] ?? '';
-        $align   = $config['align'] ?? 'left';
-        $link    = $config['link'] ?? '';
+	public function title(): string {
+		return __( 'Icon', 'imedia-menu' );
+	}
 
-        $parts  = explode(':', $icon, 2);
-        $iconClass = '';
+	public function render( array $config, array $styles = array() ): string {
+		$icon  = $config['icon'] ?? 'dashicons:admin-home';
+		$size  = $config['size'] ?? '24px';
+		$color = $config['color'] ?? '';
+		$align = $config['align'] ?? 'left';
+		$link  = $config['link'] ?? '';
 
-        if (($parts[0] ?? '') === 'dashicons') {
-            $iconClass = 'dashicons dashicons-' . ($parts[1] ?? 'admin-home');
-        }
+		$parts     = explode( ':', $icon, 2 );
+		$iconClass = '';
 
-        $style = 'font-size:' . $size;
-        if ($color) {
-            $style .= ';color:' . $color;
-        }
-        if (!empty($styles)) {
-            if (isset($styles['margin'])) {
-                $style .= ';margin:' . $styles['margin'];
-            }
-        }
+		if ( ( $parts[0] ?? '' ) === 'dashicons' ) {
+			$iconClass = 'dashicons dashicons-' . ( $parts[1] ?? 'admin-home' );
+		}
 
-        $html = sprintf(
-            '<span class="imm-block imm-block--icon imm-icon--align-%s" style="text-align:%s">',
-            esc_attr($align),
-            esc_attr($align)
-        );
+		$style = 'font-size:' . $size;
+		if ( $color ) {
+			$style .= ';color:' . $color;
+		}
+		if ( ! empty( $styles ) ) {
+			if ( isset( $styles['margin'] ) ) {
+				$style .= ';margin:' . $styles['margin'];
+			}
+		}
 
-        $iconHtml = sprintf(
-            '<span class="%s" style="%s" aria-hidden="true"></span>',
-            esc_attr($iconClass),
-            esc_attr($style)
-        );
+		$html = sprintf(
+			'<span class="imm-block imm-block--icon imm-icon--align-%s" style="text-align:%s">',
+			esc_attr( $align ),
+			esc_attr( $align )
+		);
 
-        if ($link) {
-            $html .= sprintf(
-                '<a href="%s">%s</a>',
-                esc_url($link),
-                $iconHtml
-            );
-        } else {
-            $html .= $iconHtml;
-        }
+		$iconHtml = sprintf(
+			'<span class="%s" style="%s" aria-hidden="true"></span>',
+			esc_attr( $iconClass ),
+			esc_attr( $style )
+		);
 
-        $html .= '</span>';
+		if ( $link ) {
+			$html .= sprintf(
+				'<a href="%s">%s</a>',
+				esc_url( $link ),
+				$iconHtml
+			);
+		} else {
+			$html .= $iconHtml;
+		}
 
-        return $html;
-    }
+		$html .= '</span>';
 
-    public function defaultConfig(): array
-    {
-        return [
-            'icon'  => 'dashicons:admin-home',
-            'size'  => '24px',
-            'color' => '',
-            'align' => 'left',
-            'link'  => '',
-        ];
-    }
+		return $html;
+	}
+
+	public function defaultConfig(): array {
+		return array(
+			'icon'  => 'dashicons:admin-home',
+			'size'  => '24px',
+			'color' => '',
+			'align' => 'left',
+			'link'  => '',
+		);
+	}
 }

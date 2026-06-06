@@ -7,31 +7,27 @@ namespace IMedia\Menu\Providers;
 use IMedia\Menu\Contracts\ServiceProvider;
 use IMedia\Menu\Database\MigrationRunner;
 
-final class MigrationServiceProvider implements ServiceProvider
-{
-    private MigrationRunner $runner;
+final class MigrationServiceProvider implements ServiceProvider {
 
-    public function register(): void
-    {
-        $this->runner = new MigrationRunner();
-    }
+	private MigrationRunner $runner;
 
-    public function boot(): void
-    {
-        add_action('admin_init', [$this, 'checkMigrations']);
-    }
+	public function register(): void {
+		$this->runner = new MigrationRunner();
+	}
 
-    public function checkMigrations(): void
-    {
-        $dbVersion = get_option('imedia_menu_db_version', '0.0.0');
+	public function boot(): void {
+		add_action( 'admin_init', array( $this, 'checkMigrations' ) );
+	}
 
-        if (version_compare($dbVersion, VERSION, '<')) {
-            $this->runner->run();
-        }
-    }
+	public function checkMigrations(): void {
+		$dbVersion = get_option( 'imedia_menu_db_version', '0.0.0' );
 
-    public function getRunner(): MigrationRunner
-    {
-        return $this->runner;
-    }
+		if ( version_compare( $dbVersion, VERSION, '<' ) ) {
+			$this->runner->run();
+		}
+	}
+
+	public function getRunner(): MigrationRunner {
+		return $this->runner;
+	}
 }

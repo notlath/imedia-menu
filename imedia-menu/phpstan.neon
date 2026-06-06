@@ -1,0 +1,11 @@
+includes:
+    - vendor/szepeviktor/phpstan-wordpress/extension.neon
+
+parameters:
+    level: 0
+    paths:
+        - src/
+        - imedia-menu.php
+        - uninstall.php
+    scanFiles:
+        - tests/php/stubs.php

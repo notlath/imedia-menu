@@ -1,0 +1,38 @@
+export const STORE_NAME = 'imedia-menu/settings';
+
+export const DEFAULT_SETTINGS = {
+    enabled: true,
+    trigger_type: 'hover',
+    hover_delay: 200,
+    default_animation: 'fade',
+    animation_duration: 200,
+    admin_bar_preview: true,
+    menu_bar_bg: '',
+    menu_bar_height: 60,
+    menu_text_color: '',
+    menu_text_hover: '',
+    dropdown_bg: '',
+    sticky: false,
+    transparent_mode: false,
+    mobile_breakpoint: 768,
+    off_canvas_direction: 'right',
+    hamburger_style: 'classic',
+    enable_caching: true,
+    cache_duration: 60,
+    code_splitting: true,
+    delete_data_on_uninstall: false,
+    dark_mode_enabled: false,
+    dark_mode_bg: '',
+    dark_mode_text: '',
+    dark_mode_text_hover: '',
+    dark_mode_dropdown_bg: '',
+    dark_mode_dropdown_border: '',
+};
+
+export const TAB_IDS = {
+    GENERAL: 'general',
+    DESIGN: 'design',
+    MOBILE: 'mobile',
+    PERFORMANCE: 'performance',
+    ADVANCED: 'advanced',
+};

@@ -63,3 +63,38 @@
   color: #e0e0e0;
   border-color: #464b52;
 }
+
+/* Modal overlay - ensures builder sits above all WP admin UI */
+.imm-builder-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 99998;
+}
+
+.imm-builder-modal--open {
+  display: block;
+}
+
+.imm-builder-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 0;
+}
+
+.imm-builder-modal-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+}
+
+body.imm-builder-open {
+  overflow: hidden;
+}
+
+body.imm-builder-open #adminmenuback,
+body.imm-builder-open #adminmenuwrap,
+body.imm-builder-open #wpadminbar {
+  z-index: auto;
+}

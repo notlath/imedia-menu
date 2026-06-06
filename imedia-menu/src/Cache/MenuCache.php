@@ -6,84 +6,77 @@ namespace IMedia\Menu\Cache;
 
 use IMedia\Menu\Contracts\Cacheable;
 
-final class MenuCache implements Cacheable
-{
-    private CacheKeyBuilder $keyBuilder;
+final class MenuCache implements Cacheable {
 
-    public function __construct()
-    {
-        $this->keyBuilder = new CacheKeyBuilder();
-    }
+	private CacheKeyBuilder $keyBuilder;
 
-    public function getMenuHtml(int $menuId, ?string &$cacheKey = null): ?string
-    {
-        $key = $this->keyBuilder->build($menuId);
+	public function __construct() {
+		$this->keyBuilder = new CacheKeyBuilder();
+	}
 
-        if ($cacheKey !== null) {
-            $cacheKey = $key;
-        }
+	public function getMenuHtml( int $menuId, ?string &$cacheKey = null ): ?string {
+		$key = $this->keyBuilder->build( $menuId );
 
-        $cached = wp_cache_get($key, 'imedia_menu');
+		if ( $cacheKey !== null ) {
+			$cacheKey = $key;
+		}
 
-        if ($cached !== false) {
-            return is_string($cached) ? $cached : null;
-        }
+		$cached = wp_cache_get( $key, 'imedia_menu' );
 
-        $transient = get_transient($key);
+		if ( $cached !== false ) {
+			return is_string( $cached ) ? $cached : null;
+		}
 
-        return $transient !== false ? $transient : null;
-    }
+		$transient = get_transient( $key );
 
-    public function setMenuHtml(int $menuId, string $html, int $duration = 3600): bool
-    {
-        $key = $this->keyBuilder->build($menuId);
+		return $transient !== false ? $transient : null;
+	}
 
-        wp_cache_set($key, $html, 'imedia_menu', $duration);
+	public function setMenuHtml( int $menuId, string $html, int $duration = 3600 ): bool {
+		$key = $this->keyBuilder->build( $menuId );
 
-        set_transient($key, $html, $duration);
+		wp_cache_set( $key, $html, 'imedia_menu', $duration );
 
-        return true;
-    }
+		set_transient( $key, $html, $duration );
 
-    public function get(string $key): mixed
-    {
-        $cached = wp_cache_get($key, 'imedia_menu');
+		return true;
+	}
 
-        if ($cached !== false) {
-            return $cached;
-        }
+	public function get( string $key ): mixed {
+		$cached = wp_cache_get( $key, 'imedia_menu' );
 
-        return get_transient($key);
-    }
+		if ( $cached !== false ) {
+			return $cached;
+		}
 
-    public function set(string $key, mixed $data, int $duration = 3600): bool
-    {
-        wp_cache_set($key, $data, 'imedia_menu', $duration);
-        set_transient($key, $data, $duration);
+		return get_transient( $key );
+	}
 
-        return true;
-    }
+	public function set( string $key, mixed $data, int $duration = 3600 ): bool {
+		wp_cache_set( $key, $data, 'imedia_menu', $duration );
+		set_transient( $key, $data, $duration );
 
-    public function delete(string $key): bool
-    {
-        wp_cache_delete($key, 'imedia_menu');
-        delete_transient($key);
+		return true;
+	}
 
-        return true;
-    }
+	public function delete( string $key ): bool {
+		wp_cache_delete( $key, 'imedia_menu' );
+		delete_transient( $key );
 
-    public function flush(): bool
-    {
-        global $wpdb;
+		return true;
+	}
 
-        $wpdb->query(
-            $wpdb->prepare(
-                "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
-                $wpdb->esc_like('_transient_imedia_menu_') . '%',
-                $wpdb->esc_like('_transient_timeout_imedia_menu_') . '%'
-            )
-        );
+	public function flush(): bool {
+		global $wpdb;
 
-        return true;
-    }
+		$wpdb->query(
+			$wpdb->prepare(
+				"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
+				$wpdb->esc_like( '_transient_imedia_menu_' ) . '%',
+				$wpdb->esc_like( '_transient_timeout_imedia_menu_' ) . '%'
+			)
+		);
+
+		return true;
+	}
 }

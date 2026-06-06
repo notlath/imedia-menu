@@ -173,4 +173,33 @@
   border-left: 5px solid currentColor;
   border-top: 5px solid transparent;
   border-bottom: 5px solid transparent;
+  transition: transform 0.2s ease;
+}
+
+.imm-mobile-content .imm-item--open > .imm-link .imm-caret {
+  transform: rotate(90deg);
+}
+
+.imm-mobile-content .imm-block--image,
+.imm-mobile-content .imm-block--banner,
+.imm-mobile-content .imm-block--divider {
+  display: none;
+}
+
+.imm-mobile-content .imm-sub,
+.imm-mobile-content .imm-panel {
+  display: none;
+}
+
+.imm-mobile-content .imm-item--open > .imm-sub,
+.imm-mobile-content .imm-item--open > .imm-panel {
+  display: block;
+}
+
+.imm-mobile-content .imm-panel[hidden] {
+  display: none;
+}
+
+.imm-mobile-content .imm-item--open > .imm-panel[hidden] {
+  display: block;
 }

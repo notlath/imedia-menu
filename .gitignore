@@ -41,9 +41,9 @@ Desktop.ini
 *.swo
 *~
 
-# Build artifacts
-build/
-dist/
+# Build artifacts (root only - subdirectory builds like imedia-menu/assets/admin/*/build/ are committed)
+/build/
+/dist/
 
 # Project-level agent skills
 .agents/

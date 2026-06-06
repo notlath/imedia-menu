@@ -4,111 +4,175 @@ declare(strict_types=1);
 
 namespace IMedia\Menu\Providers;
 
+use IMedia\Menu\Admin\Settings\LocationOverrides;
 use IMedia\Menu\Contracts\ServiceProvider;
 use IMedia\Menu\Frontend\Assets;
 use IMedia\Menu\Frontend\MenuWalker;
 use IMedia\Menu\Cache\MenuCache;
 
-final class FrontendServiceProvider implements ServiceProvider
-{
-    private Assets $assets;
+final class FrontendServiceProvider implements ServiceProvider {
 
-    public function register(): void
-    {
-        $this->assets = new Assets();
-    }
+	private Assets $assets;
 
-    public function boot(): void
-    {
-        add_action('wp_enqueue_scripts', [$this->assets, 'enqueue'], 100);
-        add_filter('wp_nav_menu_args', [$this, 'filterMenuArgs'], 10, 2);
-    }
+	public function register(): void {
+		$this->assets = new Assets();
+	}
 
-    public function filterMenuArgs(array $args): array
-    {
-        $settings    = get_option('imedia_menu_settings', []);
-        $enabled     = $settings['enabled'] ?? true;
+	public function boot(): void {
+		add_action( 'wp_enqueue_scripts', array( $this->assets, 'enqueue' ), 100 );
+		add_filter( 'wp_nav_menu_args', array( $this, 'filterMenuArgs' ), 10, 2 );
+	}
 
-        if (!$enabled) {
-            return $args;
-        }
+	public function filterMenuArgs( array $args ): array {
+		$globalSettings = get_option( 'imedia_menu_settings', array() );
+		$enabled        = $globalSettings['enabled'] ?? true;
 
-        $location = $args['theme_location'] ?? '';
+		if ( ! $enabled ) {
+			return $args;
+		}
 
-        if (empty($location)) {
-            return $args;
-        }
+		$location = $args['theme_location'] ?? '';
 
-        $menuId = $this->getMenuIdFromLocation($location);
+		if ( empty( $location ) ) {
+			return $args;
+		}
 
-        if ($menuId === 0) {
-            return $args;
-        }
+		$mergedSettings = LocationOverrides::mergeWithGlobal( $globalSettings, $location );
 
-        $walker = new MenuWalker($menuId);
+		$menuId = $this->getMenuIdFromLocation( $location );
 
-        $cache = new MenuCache();
-        $cacheKey = null;
-        $cached = $cache->getMenuHtml($menuId, $cacheKey);
+		if ( $menuId === 0 ) {
+			return $args;
+		}
 
-        if ($cached !== null) {
-            add_filter('wp_nav_menu', function (string $navHtml, object $navArgs) use ($cached, $cacheKey): string {
-                if (isset($navArgs->walker) && $navArgs->walker instanceof MenuWalker) {
-                    return $cached;
-                }
-                return $navHtml;
-            }, 10, 2);
-        }
+		$walker = new MenuWalker( $menuId, $mergedSettings );
 
-        $args['walker']       = $walker;
-        $args['container']    = 'nav';
-        $args['container_class'] = $this->getContainerClass($location);
-        $args['container_aria_label'] = $this->getMenuLabel($menuId);
-        $args['menu_class']   = 'imm-menu';
-        $args['items_wrap']   = $this->getItemsWrap($menuId);
-        $args['fallback_cb']  = false;
-        $args['echo']         = false;
+		$cache    = new MenuCache();
+		$cacheKey = null;
+		$cached   = $cache->getMenuHtml( $menuId, $cacheKey );
 
-        return $args;
-    }
+		if ( $cached !== null ) {
+			add_filter(
+				'wp_nav_menu',
+				function ( string $navHtml, object $navArgs ) use ( $cached, $cacheKey ): string {
+					if ( isset( $navArgs->walker ) && $navArgs->walker instanceof MenuWalker ) {
+						return $cached;
+					}
+					return $navHtml;
+				},
+				10,
+				2
+			);
+		}
 
-    private function getMenuIdFromLocation(string $location): int
-    {
-        $locations = get_nav_menu_locations();
+		$containerClass = $this->getContainerClass( $location, $mergedSettings );
 
-        return (int) ($locations[$location] ?? 0);
-    }
+		$this->addPerLocationInlineCss( $location, $mergedSettings );
 
-    private function getContainerClass(string $location): string
-    {
-        $settings = get_option('imedia_menu_settings', []);
-        $classes  = ['imm-nav'];
+		$args['walker']               = $walker;
+		$args['container']            = 'nav';
+		$args['container_class']      = $containerClass;
+		$args['container_aria_label'] = $this->getMenuLabel( $menuId );
+		$args['menu_class']           = 'imm-menu';
+		$args['items_wrap']           = $this->getItemsWrap( $menuId );
+		$args['fallback_cb']          = false;
+		$args['echo']                 = false;
 
-        if (!empty($settings['transparent_mode'])) {
-            $classes[] = 'imm-nav--transparent';
-        }
+		add_filter(
+			'wp_nav_menu',
+			function ( string $navHtml, object $navArgs ) use ( $mergedSettings, $walker ): string {
+				if ( ! isset( $navArgs->walker ) || ! $navArgs->walker instanceof MenuWalker ) {
+					return $navHtml;
+				}
 
-        if (!empty($settings['sticky'])) {
-            $classes[] = 'imm-nav--sticky';
-        }
+				$trigger    = $mergedSettings['trigger_type'] ?? 'hover';
+				$delay      = (int) ( $mergedSettings['hover_delay'] ?? 200 );
+				$animation  = $mergedSettings['default_animation'] ?? 'fade';
+				$dataAttrs  = sprintf(
+					' data-trigger="%s" data-hover-delay="%d" data-animation="%s"',
+					esc_attr( $trigger ),
+					$delay,
+					esc_attr( $animation )
+				);
 
-        $classes[] = 'imm-nav--location-' . $location;
+				return str_replace( '<nav', '<nav' . $dataAttrs, $navHtml );
+			},
+			20,
+			2
+		);
 
-        return implode(' ', $classes);
-    }
+		return $args;
+	}
 
-    private function getMenuLabel(int $menuId): string
-    {
-        $menu = wp_get_nav_menu_object($menuId);
+	private function addPerLocationInlineCss( string $location, array $settings ): void {
+		$locationClass = '.imm-nav--location-' . sanitize_title( $location );
+		$cssVars       = array();
 
-        return $menu ? $menu->name : __('Navigation', 'imedia-menu');
-    }
+		if ( ! empty( $settings['menu_bar_bg'] ) ) {
+			$cssVars[] = '--imm-bg:' . $settings['menu_bar_bg'];
+		}
 
-    private function getItemsWrap(int $menuId): string
-    {
-        return sprintf(
-            '<ul id="imm-menu-%d" class="%%2$s" role="menu">%%3$s</ul>',
-            $menuId
-        );
-    }
+		if ( ! empty( $settings['menu_bar_height'] ) ) {
+			$cssVars[] = '--imm-height:' . (int) $settings['menu_bar_height'] . 'px';
+		}
+
+		if ( ! empty( $settings['menu_text_color'] ) ) {
+			$cssVars[] = '--imm-text:' . $settings['menu_text_color'];
+		}
+
+		if ( ! empty( $settings['menu_text_hover'] ) ) {
+			$cssVars[] = '--imm-text-hover:' . $settings['menu_text_hover'];
+		}
+
+		if ( ! empty( $settings['dropdown_bg'] ) ) {
+			$cssVars[] = '--imm-dropdown-bg:' . $settings['dropdown_bg'];
+		}
+
+		if ( empty( $cssVars ) ) {
+			return;
+		}
+
+		$css = sprintf(
+			'%s { %s }',
+			esc_attr( $locationClass ),
+			implode( ';', $cssVars )
+		);
+
+		wp_add_inline_style( 'imm-base', $css );
+	}
+
+	private function getMenuIdFromLocation( string $location ): int {
+		$locations = get_nav_menu_locations();
+
+		return (int) ( $locations[ $location ] ?? 0 );
+	}
+
+	private function getContainerClass( string $location, array $settings ): string {
+		$classes = array( 'imm-nav' );
+
+		if ( ! empty( $settings['transparent_mode'] ) ) {
+			$classes[] = 'imm-nav--transparent';
+		}
+
+		if ( ! empty( $settings['sticky'] ) ) {
+			$classes[] = 'imm-nav--sticky';
+		}
+
+		$classes[] = 'imm-nav--location-' . $location;
+
+		return implode( ' ', $classes );
+	}
+
+	private function getMenuLabel( int $menuId ): string {
+		$menu = wp_get_nav_menu_object( $menuId );
+
+		return $menu ? $menu->name : __( 'Navigation', 'imedia-menu' );
+	}
+
+	private function getItemsWrap( int $menuId ): string {
+		return sprintf(
+			'<ul id="imm-menu-%d" class="%%2$s" role="menu">%%3$s</ul>',
+			$menuId
+		);
+	}
 }

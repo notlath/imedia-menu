@@ -6,52 +6,48 @@ namespace IMedia\Menu\Visibility\Conditions;
 
 use IMedia\Menu\Contracts\VisibilityCondition;
 
-final class LanguageCondition implements VisibilityCondition
-{
-    public function type(): string
-    {
-        return 'language';
-    }
+final class LanguageCondition implements VisibilityCondition {
 
-    public function label(): string
-    {
-        return __('Language/Locale', 'imedia-menu');
-    }
+	public function type(): string {
+		return 'language';
+	}
 
-    public function evaluate(array $config): bool
-    {
-        $allowedLocales = $config['locales'] ?? [];
+	public function label(): string {
+		return __( 'Language/Locale', 'imedia-menu' );
+	}
 
-        if (empty($allowedLocales)) {
-            return true;
-        }
+	public function evaluate( array $config ): bool {
+		$allowedLocales = $config['locales'] ?? array();
 
-        $currentLocale = $this->detectLocale();
+		if ( empty( $allowedLocales ) ) {
+			return true;
+		}
 
-        return in_array($currentLocale, $allowedLocales, true);
-    }
+		$currentLocale = $this->detectLocale();
 
-    private function detectLocale(): string
-    {
-        if (function_exists('pll_current_language')) {
-            return pll_current_language('locale');
-        }
+		return in_array( $currentLocale, $allowedLocales, true );
+	}
 
-        if (defined('ICL_LANGUAGE_CODE') && function_exists('wpml_get_language_information')) {
-            global $post;
-            if ($post) {
-                $info = wpml_get_language_information($post);
-                return $info['locale'] ?? get_locale();
-            }
-        }
+	private function detectLocale(): string {
+		if ( function_exists( 'pll_current_language' ) ) {
+			return pll_current_language( 'locale' );
+		}
 
-        if (function_exists('trp_get_language')) {
-            $lang = trp_get_language();
-            if ($lang) {
-                return $lang;
-            }
-        }
+		if ( defined( 'ICL_LANGUAGE_CODE' ) && function_exists( 'wpml_get_language_information' ) ) {
+			global $post;
+			if ( $post ) {
+				$info = wpml_get_language_information( $post );
+				return $info['locale'] ?? get_locale();
+			}
+		}
 
-        return get_locale();
-    }
+		if ( function_exists( 'trp_get_language' ) ) {
+			$lang = trp_get_language();
+			if ( $lang ) {
+				return $lang;
+			}
+		}
+
+		return get_locale();
+	}
 }

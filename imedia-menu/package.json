@@ -3,6 +3,12 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
+        "build": "npm run build:settings && npm run build:panel && npm run build:block",
+        "build:block": "npm --prefix assets/blocks/navigation-block run build",
+        "build:settings": "npm --prefix assets/admin/settings-page run build",
+        "build:panel": "npm --prefix assets/admin/panel-builder run build",
+        "start:settings": "npm --prefix assets/admin/settings-page run start",
+        "start:panel": "npm --prefix assets/admin/panel-builder run start",
         "test:js": "jest",
         "test:e2e": "playwright test"
     },

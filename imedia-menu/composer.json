@@ -36,7 +36,8 @@
         "phpcs": "vendor/bin/phpcs --standard=phpcs.xml.dist",
         "phpcbf": "vendor/bin/phpcbf --standard=phpcs.xml.dist",
         "phpstan": "vendor/bin/phpstan analyse --memory-limit=2G",
-        "phpunit": "vendor/bin/phpunit",
+        "phpunit": "vendor/bin/phpunit -c phpunit-unit.xml.dist",
+        "build": "npm run build",
         "test": ["@phpcs", "@phpstan", "@phpunit"]
     },
     "config": {

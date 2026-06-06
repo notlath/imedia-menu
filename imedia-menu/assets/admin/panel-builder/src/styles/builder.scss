@@ -1,0 +1,137 @@
+@import 'variables';
+@import 'canvas';
+@import 'block-picker';
+@import 'settings-panel';
+@import 'responsive';
+@import 'modal';
+
+.imm-builder-overlay {
+    position: fixed;
+    inset: 0;
+    background: $builder-bg;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    color: $builder-text;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.imm-builder-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 16px;
+    color: $builder-text-muted;
+
+    .spinner {
+        float: none;
+        margin: 0;
+    }
+}
+
+.imm-builder {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.imm-builder-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    background: $builder-surface;
+    border-bottom: 1px solid $builder-border;
+    flex-shrink: 0;
+    min-height: 48px;
+}
+
+.imm-builder-header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.imm-builder-title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: $builder-text;
+    white-space: nowrap;
+}
+
+.imm-builder-header-center {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.imm-builder-header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.imm-unsaved-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: $builder-text-muted;
+}
+
+.imm-unsaved-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: $builder-accent;
+    animation: imm-pulse 2s ease infinite;
+}
+
+@keyframes imm-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+.imm-builder-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+// Scrollbar styling
+.imm-canvas::-webkit-scrollbar,
+.imm-settings-sidebar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.imm-canvas::-webkit-scrollbar-track,
+.imm-settings-sidebar::-webkit-scrollbar-track {
+    background: $builder-bg;
+}
+
+.imm-canvas::-webkit-scrollbar-thumb,
+.imm-settings-sidebar::-webkit-scrollbar-thumb {
+    background: $builder-border;
+    border-radius: 4px;
+
+    &:hover {
+        background: $builder-text-muted;
+    }
+}
+
+// Override WordPress admin styles that leak into the overlay
+.imm-builder-overlay {
+    #wpbody-content,
+    .wrap,
+    #adminmenumain,
+    #wpadminbar,
+    #adminmenuback,
+    #adminmenuwrap,
+    #wpfooter {
+        display: none;
+    }
+}

@@ -6,69 +6,64 @@ namespace IMedia\Menu\ContentBlocks;
 
 use IMedia\Menu\Contracts\ContentBlock;
 
-final class MenuLinksBlock implements ContentBlock
-{
-    public function type(): string
-    {
-        return 'menu_links';
-    }
+final class MenuLinksBlock implements ContentBlock {
 
-    public function title(): string
-    {
-        return __('Menu Links', 'imedia-menu');
-    }
+	public function type(): string {
+		return 'menu_links';
+	}
 
-    public function render(array $config, array $styles = []): string
-    {
-        $showDescriptions = $config['show_descriptions'] ?? false;
-        $showIcons        = $config['show_icons'] ?? false;
-        $source           = $config['source'] ?? 'children';
+	public function title(): string {
+		return __( 'Menu Links', 'imedia-menu' );
+	}
 
-        if ($source === 'children') {
-            return $this->renderPlaceholder($showDescriptions, $showIcons);
-        }
+	public function render( array $config, array $styles = array() ): string {
+		$showDescriptions = $config['show_descriptions'] ?? false;
+		$showIcons        = $config['show_icons'] ?? false;
+		$source           = $config['source'] ?? 'children';
 
-        return $this->renderPlaceholder($showDescriptions, $showIcons);
-    }
+		if ( $source === 'children' ) {
+			return $this->renderPlaceholder( $showDescriptions, $showIcons );
+		}
 
-    public function defaultConfig(): array
-    {
-        return [
-            'source'            => 'children',
-            'show_descriptions' => false,
-            'show_icons'        => true,
-            'max_depth'         => 0,
-        ];
-    }
+		return $this->renderPlaceholder( $showDescriptions, $showIcons );
+	}
 
-    private function renderPlaceholder(bool $showDescriptions, bool $showIcons): string
-    {
-        $html = '<ul class="imm-block imm-block--links" role="menu">';
+	public function defaultConfig(): array {
+		return array(
+			'source'            => 'children',
+			'show_descriptions' => false,
+			'show_icons'        => true,
+			'max_depth'         => 0,
+		);
+	}
 
-        $html .= '<li role="none">';
-        $html .= '<a href="#" role="menuitem" class="imm-link">';
+	private function renderPlaceholder( bool $showDescriptions, bool $showIcons ): string {
+		$html = '<ul class="imm-block imm-block--links" role="menu">';
 
-        if ($showIcons) {
-            $html .= '<span class="imm-link-icon dashicons dashicons-admin-links" aria-hidden="true"></span>';
-        }
+		$html .= '<li role="none">';
+		$html .= '<a href="#" role="menuitem" class="imm-link">';
 
-        $html .= '<span class="imm-link-text">';
-        $html .= '<span class="imm-link-label">' . esc_html__('Link Item', 'imedia-menu') . '</span>';
+		if ( $showIcons ) {
+			$html .= '<span class="imm-link-icon dashicons dashicons-admin-links" aria-hidden="true"></span>';
+		}
 
-        if ($showDescriptions) {
-            $html .= '<span class="imm-link-desc">' . esc_html__('Link description', 'imedia-menu') . '</span>';
-        }
+		$html .= '<span class="imm-link-text">';
+		$html .= '<span class="imm-link-label">' . esc_html__( 'Link Item', 'imedia-menu' ) . '</span>';
 
-        $html .= '</span></a></li>';
+		if ( $showDescriptions ) {
+			$html .= '<span class="imm-link-desc">' . esc_html__( 'Link description', 'imedia-menu' ) . '</span>';
+		}
 
-        $html .= '<li role="none">';
-        $html .= '<a href="#" role="menuitem" class="imm-link">';
-        $html .= '<span class="imm-link-text">';
-        $html .= '<span class="imm-link-label">' . esc_html__('Another Link', 'imedia-menu') . '</span>';
-        $html .= '</span></a></li>';
+		$html .= '</span></a></li>';
 
-        $html .= '</ul>';
+		$html .= '<li role="none">';
+		$html .= '<a href="#" role="menuitem" class="imm-link">';
+		$html .= '<span class="imm-link-text">';
+		$html .= '<span class="imm-link-label">' . esc_html__( 'Another Link', 'imedia-menu' ) . '</span>';
+		$html .= '</span></a></li>';
 
-        return $html;
-    }
+		$html .= '</ul>';
+
+		return $html;
+	}
 }

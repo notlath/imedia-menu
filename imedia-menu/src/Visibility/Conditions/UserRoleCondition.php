@@ -6,36 +6,33 @@ namespace IMedia\Menu\Visibility\Conditions;
 
 use IMedia\Menu\Contracts\VisibilityCondition;
 
-final class UserRoleCondition implements VisibilityCondition
-{
-    public function type(): string
-    {
-        return 'user_role';
-    }
+final class UserRoleCondition implements VisibilityCondition {
 
-    public function label(): string
-    {
-        return __('User Roles', 'imedia-menu');
-    }
+	public function type(): string {
+		return 'user_role';
+	}
 
-    public function evaluate(array $config): bool
-    {
-        $allowedRoles = $config['roles'] ?? [];
-        $mode         = $config['mode'] ?? 'any';
+	public function label(): string {
+		return __( 'User Roles', 'imedia-menu' );
+	}
 
-        if (empty($allowedRoles)) {
-            return true;
-        }
+	public function evaluate( array $config ): bool {
+		$allowedRoles = $config['roles'] ?? array();
+		$mode         = $config['mode'] ?? 'any';
 
-        if (!is_user_logged_in()) {
-            return false;
-        }
+		if ( empty( $allowedRoles ) ) {
+			return true;
+		}
 
-        $user = wp_get_current_user();
-        $userRoles = $user->roles;
+		if ( ! is_user_logged_in() ) {
+			return false;
+		}
 
-        $matched = !empty(array_intersect($allowedRoles, $userRoles));
+		$user      = wp_get_current_user();
+		$userRoles = $user->roles;
 
-        return $mode === 'any' ? $matched : !$matched;
-    }
+		$matched = ! empty( array_intersect( $allowedRoles, $userRoles ) );
+
+		return $mode === 'any' ? $matched : ! $matched;
+	}
 }

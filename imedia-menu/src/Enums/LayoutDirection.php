@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace IMedia\Menu\Enums;
 
-enum LayoutDirection: string
-{
-    case LTR = 'ltr';
-    case RTL = 'rtl';
+enum LayoutDirection: string {
 
-    public function isRTL(): bool
-    {
-        return $this === self::RTL;
-    }
+	case LTR = 'ltr';
+	case RTL = 'rtl';
+
+	public function isRTL(): bool {
+		return $this === self::RTL;
+	}
 }

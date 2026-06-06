@@ -7,51 +7,46 @@ namespace IMedia\Menu\Icons;
 use IMedia\Menu\Contracts\IconProvider;
 use IMedia\Menu\Icons\IconProviderRegistry;
 
-final class IconManager
-{
-    private IconProviderRegistry $registry;
+final class IconManager {
 
-    public function __construct()
-    {
-        $this->registry = new IconProviderRegistry();
-    }
+	private IconProviderRegistry $registry;
 
-    public function register(IconProvider $provider): void
-    {
-        $this->registry->register($provider);
-    }
+	public function __construct() {
+		$this->registry = new IconProviderRegistry();
+	}
 
-    public function getIcon(string $iconIdentifier): string
-    {
-        $parts = explode(':', $iconIdentifier, 2);
-        $providerId = $parts[0] ?? '';
-        $iconId     = $parts[1] ?? '';
+	public function register( IconProvider $provider ): void {
+		$this->registry->register( $provider );
+	}
 
-        $provider = $this->registry->get($providerId);
+	public function getIcon( string $iconIdentifier ): string {
+		$parts      = explode( ':', $iconIdentifier, 2 );
+		$providerId = $parts[0] ?? '';
+		$iconId     = $parts[1] ?? '';
 
-        if ($provider === null) {
-            return '';
-        }
+		$provider = $this->registry->get( $providerId );
 
-        return $provider->getIcon($iconId);
-    }
+		if ( $provider === null ) {
+			return '';
+		}
 
-    public function getAvailableIcons(): array
-    {
-        $result = [];
+		return $provider->getIcon( $iconId );
+	}
 
-        foreach ($this->registry->getAll() as $provider) {
-            $result[$provider->id()] = [
-                'name'   => $provider->name(),
-                'icons'  => $provider->getAvailableIcons(),
-            ];
-        }
+	public function getAvailableIcons(): array {
+		$result = array();
 
-        return $result;
-    }
+		foreach ( $this->registry->getAll() as $provider ) {
+			$result[ $provider->id() ] = array(
+				'name'  => $provider->name(),
+				'icons' => $provider->getAvailableIcons(),
+			);
+		}
 
-    public function getRegistry(): IconProviderRegistry
-    {
-        return $this->registry;
-    }
+		return $result;
+	}
+
+	public function getRegistry(): IconProviderRegistry {
+		return $this->registry;
+	}
 }

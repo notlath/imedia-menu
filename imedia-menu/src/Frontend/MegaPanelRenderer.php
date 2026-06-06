@@ -7,74 +7,70 @@ namespace IMedia\Menu\Frontend;
 use IMedia\Menu\ContentBlocks\Registry;
 use IMedia\Menu\Visibility\ConditionEvaluator;
 
-final class MegaPanelRenderer
-{
-    private Registry $registry;
-    private ConditionEvaluator $evaluator;
+final class MegaPanelRenderer {
 
-    public function __construct()
-    {
-        $this->registry  = new Registry();
-        $this->evaluator = new ConditionEvaluator();
-    }
+	private Registry $registry;
+	private ConditionEvaluator $evaluator;
 
-    public function render(object $panel): string
-    {
-        $config   = $panel->config ?? [];
-        $rows     = $config['rows'] ?? [];
-        $html     = '';
+	public function __construct() {
+		$this->registry  = new Registry();
+		$this->evaluator = new ConditionEvaluator();
+	}
 
-        foreach ($rows as $row) {
-            $html .= $this->renderRow($row, $panel);
-        }
+	public function render( object $panel ): string {
+		$config = $panel->config ?? array();
+		$rows   = $config['rows'] ?? array();
+		$html   = '';
 
-        return $html;
-    }
+		foreach ( $rows as $row ) {
+			$html .= $this->renderRow( $row, $panel );
+		}
 
-    private function renderRow(array $row, object $panel): string
-    {
-        $columns        = $row['columns'] ?? [];
-        $html  = '<div class="imm-row">';
+		return $html;
+	}
 
-        foreach ($columns as $column) {
-            $html .= $this->renderColumn($column, $panel);
-        }
+	private function renderRow( array $row, object $panel ): string {
+		$columns = $row['columns'] ?? array();
+		$html    = '<div class="imm-row">';
 
-        $html .= '</div>';
+		foreach ( $columns as $column ) {
+			$html .= $this->renderColumn( $column, $panel );
+		}
 
-        return $html;
-    }
+		$html .= '</div>';
 
-    private function renderColumn(array $column, object $panel): string
-    {
-        $blocks       = $column['blocks'] ?? [];
-        $width        = $column['width'] ?? 'auto';
-        $columnStyles = $column['styles'] ?? [];
+		return $html;
+	}
 
-        $style = '--imm-col-width:' . $width;
+	private function renderColumn( array $column, object $panel ): string {
+		$blocks       = $column['blocks'] ?? array();
+		$width        = $column['width'] ?? 'auto';
+		$columnStyles = $column['styles'] ?? array();
 
-        if (!empty($columnStyles)) {
-            if (isset($columnStyles['padding'])) {
-                $p = $columnStyles['padding'];
-                $style .= ';padding:' . $p['top'] . ' ' . $p['right'] . ' ' . $p['bottom'] . ' ' . $p['left'];
-            }
-        }
+		$style = '--imm-col-width:' . $width;
 
-        $html = sprintf(
-            '<div class="imm-col" style="%s">',
-            esc_attr($style)
-        );
+		if ( ! empty( $columnStyles ) ) {
+			if ( isset( $columnStyles['padding'] ) ) {
+				$p      = $columnStyles['padding'];
+				$style .= ';padding:' . $p['top'] . ' ' . $p['right'] . ' ' . $p['bottom'] . ' ' . $p['left'];
+			}
+		}
 
-        foreach ($blocks as $block) {
-            if (!$this->evaluator->isBlockVisible($block)) {
-                continue;
-            }
+		$html = sprintf(
+			'<div class="imm-col" style="%s">',
+			esc_attr( $style )
+		);
 
-            $html .= $this->registry->render($block);
-        }
+		foreach ( $blocks as $block ) {
+			if ( ! $this->evaluator->isBlockVisible( $block ) ) {
+				continue;
+			}
 
-        $html .= '</div>';
+			$html .= $this->registry->render( $block );
+		}
 
-        return $html;
-    }
+		$html .= '</div>';
+
+		return $html;
+	}
 }

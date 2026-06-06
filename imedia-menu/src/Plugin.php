@@ -6,83 +6,83 @@ namespace IMedia\Menu;
 
 use IMedia\Menu\Contracts\ServiceProvider;
 
-final class Plugin
-{
-    private static ?self $instance = null;
+final class Plugin {
 
-    private bool $booted = false;
+	private static ?self $instance = null;
 
-    /** @var ServiceProvider[] */
-    private array $providers = [];
+	private bool $booted = false;
 
-    public static function init(): void
-    {
-        self::$instance ??= new self();
-        self::$instance->boot();
-    }
+	/** @var ServiceProvider[] */
+	private array $providers = array();
 
-    public static function instance(): self
-    {
-        if (self::$instance === null) {
-            throw new \RuntimeException('Plugin not initialized. Call Plugin::init() first.');
-        }
-        return self::$instance;
-    }
+	public static function init(): void {
+		self::$instance ??= new self();
+		self::$instance->boot();
+	}
 
-    public function boot(): void
-    {
-        if ($this->booted) {
-            return;
-        }
+	public static function instance(): self {
+		if ( self::$instance === null ) {
+			throw new \RuntimeException( 'Plugin not initialized. Call Plugin::init() first.' );
+		}
+		return self::$instance;
+	}
 
-        $this->booted = true;
+	public function boot(): void {
+		if ( $this->booted ) {
+			return;
+		}
 
-        $shared = [
-            Providers\CacheServiceProvider::class,
-            Providers\VisibilityServiceProvider::class,
-            Providers\RestApiServiceProvider::class,
-            Providers\IconServiceProvider::class,
-            Providers\TemplateServiceProvider::class,
-            Providers\MigrationServiceProvider::class,
-            Providers\BlockEditorServiceProvider::class,
-        ];
+		$this->booted = true;
 
-        if (is_admin()) {
-            $this->bootProviders([
-                ...$shared,
-                Providers\AdminServiceProvider::class,
-                Providers\MenuEditorServiceProvider::class,
-                Providers\MegaPanelServiceProvider::class,
-                Providers\RevisionServiceProvider::class,
-            ]);
-        } else {
-            $this->bootProviders([
-                ...$shared,
-                Providers\FrontendServiceProvider::class,
-                Providers\MobileServiceProvider::class,
-            ]);
-        }
+		$shared = array(
+			Providers\CacheServiceProvider::class,
+			Providers\VisibilityServiceProvider::class,
+			Providers\RestApiServiceProvider::class,
+			Providers\IconServiceProvider::class,
+			Providers\TemplateServiceProvider::class,
+			Providers\MigrationServiceProvider::class,
+			Providers\BlockEditorServiceProvider::class,
+		);
 
-        do_action('imedia_menu_loaded');
-    }
+		if ( is_admin() ) {
+			$this->bootProviders(
+				array(
+					...$shared,
+					Providers\SettingsServiceProvider::class,
+					Providers\AdminServiceProvider::class,
+					Providers\MenuEditorServiceProvider::class,
+					Providers\MegaPanelServiceProvider::class,
+					Providers\RevisionServiceProvider::class,
+				)
+			);
+		} else {
+			$this->bootProviders(
+				array(
+					...$shared,
+					Providers\FrontendServiceProvider::class,
+					Providers\MobileServiceProvider::class,
+				)
+			);
+		}
 
-    public function bootProviders(array $classes): void
-    {
-        foreach ($classes as $class) {
-            $provider = new $class();
-            $provider->register();
-            $provider->boot();
-            $this->providers[] = $provider;
-        }
-    }
+		do_action( 'imedia_menu_loaded' );
+	}
 
-    public function getProvider(string $class): ?ServiceProvider
-    {
-        foreach ($this->providers as $provider) {
-            if ($provider instanceof $class) {
-                return $provider;
-            }
-        }
-        return null;
-    }
+	public function bootProviders( array $classes ): void {
+		foreach ( $classes as $class ) {
+			$provider = new $class();
+			$provider->register();
+			$provider->boot();
+			$this->providers[] = $provider;
+		}
+	}
+
+	public function getProvider( string $class ): ?ServiceProvider {
+		foreach ( $this->providers as $provider ) {
+			if ( $provider instanceof $class ) {
+				return $provider;
+			}
+		}
+		return null;
+	}
 }

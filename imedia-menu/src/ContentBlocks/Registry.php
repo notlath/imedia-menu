@@ -6,72 +6,66 @@ namespace IMedia\Menu\ContentBlocks;
 
 use IMedia\Menu\Contracts\ContentBlock;
 
-final class Registry
-{
-    /** @var array<string, ContentBlock> */
-    private array $blocks = [];
+final class Registry {
 
-    public function __construct()
-    {
-        $this->registerDefaults();
-    }
+	/** @var array<string, ContentBlock> */
+	private array $blocks = array();
 
-    public function register(ContentBlock $block): void
-    {
-        $this->blocks[$block->type()] = $block;
-    }
+	public function __construct() {
+		$this->registerDefaults();
+	}
 
-    public function get(string $type): ?ContentBlock
-    {
-        return $this->blocks[$type] ?? null;
-    }
+	public function register( ContentBlock $block ): void {
+		$this->blocks[ $block->type() ] = $block;
+	}
 
-    public function getAll(): array
-    {
-        return $this->blocks;
-    }
+	public function get( string $type ): ?ContentBlock {
+		return $this->blocks[ $type ] ?? null;
+	}
 
-    public function render(array $block): string
-    {
-        $type   = $block['type'] ?? '';
-        $config = $block['config'] ?? [];
-        $styles = $block['styles'] ?? [];
+	public function getAll(): array {
+		return $this->blocks;
+	}
 
-        $handler = $this->get($type);
+	public function render( array $block ): string {
+		$type   = $block['type'] ?? '';
+		$config = $block['config'] ?? array();
+		$styles = $block['styles'] ?? array();
 
-        if ($handler === null) {
-            return sprintf(
-                '<!-- iMedia Menu: Unknown block type "%s" -->',
-                esc_html($type)
-            );
-        }
+		$handler = $this->get( $type );
 
-        $html = $handler->render($config, $styles);
+		if ( $handler === null ) {
+			return sprintf(
+				'<!-- iMedia Menu: Unknown block type "%s" -->',
+				esc_html( $type )
+			);
+		}
 
-        return apply_filters('imedia_menu_content_block_html', $html, $block, null);
-    }
+		$html = $handler->render( $config, $styles );
 
-    private function registerDefaults(): void
-    {
-        $defaults = [
-            new MenuLinksBlock(),
-            new HeadingBlock(),
-            new TextBlock(),
-            new IconBlock(),
-            new ImageBlock(),
-            new BannerBlock(),
-            new GutenbergBlock(),
-            new WidgetBlock(),
-            new HtmlBlock(),
-            new ShortcodeBlock(),
-            new PostListingBlock(),
-            new TaxonomyListingBlock(),
-            new SearchBlock(),
-            new DividerBlock(),
-        ];
+		return apply_filters( 'imedia_menu_content_block_html', $html, $block, null );
+	}
 
-        foreach ($defaults as $block) {
-            $this->register($block);
-        }
-    }
+	private function registerDefaults(): void {
+		$defaults = array(
+			new MenuLinksBlock(),
+			new HeadingBlock(),
+			new TextBlock(),
+			new IconBlock(),
+			new ImageBlock(),
+			new BannerBlock(),
+			new GutenbergBlock(),
+			new WidgetBlock(),
+			new HtmlBlock(),
+			new ShortcodeBlock(),
+			new PostListingBlock(),
+			new TaxonomyListingBlock(),
+			new SearchBlock(),
+			new DividerBlock(),
+		);
+
+		foreach ( $defaults as $block ) {
+			$this->register( $block );
+		}
+	}
 }

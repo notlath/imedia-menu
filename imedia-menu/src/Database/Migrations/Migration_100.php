@@ -6,23 +6,20 @@ namespace IMedia\Menu\Database\Migrations;
 
 use IMedia\Menu\Database\Schema;
 
-#[Migration(version: '1.0.0', description: 'Initial database schema')]
-final class Migration_100
-{
-    private Schema $schema;
+#[Migration( version: '1.0.0', description: 'Initial database schema' )]
+final class Migration_100 {
 
-    public function __construct()
-    {
-        $this->schema = new Schema();
-    }
+	private Schema $schema;
 
-    public function up(): void
-    {
-        $this->schema->create();
-    }
+	public function __construct() {
+		$this->schema = new Schema();
+	}
 
-    public function down(): void
-    {
-        $this->schema->drop();
-    }
+	public function up(): void {
+		$this->schema->create();
+	}
+
+	public function down(): void {
+		$this->schema->drop();
+	}
 }

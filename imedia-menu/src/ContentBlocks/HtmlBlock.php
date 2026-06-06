@@ -6,48 +6,44 @@ namespace IMedia\Menu\ContentBlocks;
 
 use IMedia\Menu\Contracts\ContentBlock;
 
-final class HtmlBlock implements ContentBlock
-{
-    public function type(): string
-    {
-        return 'html';
-    }
+final class HtmlBlock implements ContentBlock {
 
-    public function title(): string
-    {
-        return __('Custom HTML', 'imedia-menu');
-    }
+	public function type(): string {
+		return 'html';
+	}
 
-    public function render(array $config, array $styles = []): string
-    {
-        $html = $config['html'] ?? '';
+	public function title(): string {
+		return __( 'Custom HTML', 'imedia-menu' );
+	}
 
-        $allowedHtml = wp_kses_allowed_html('post');
+	public function render( array $config, array $styles = array() ): string {
+		$html = $config['html'] ?? '';
 
-        $allowedHtml['script'] = [
-            'type'     => true,
-            'src'      => true,
-            'async'    => true,
-            'defer'    => true,
-        ];
+		$allowedHtml = wp_kses_allowed_html( 'post' );
 
-        $allowedHtml['style'] = [
-            'type' => true,
-            'media' => true,
-        ];
+		$allowedHtml['script'] = array(
+			'type'  => true,
+			'src'   => true,
+			'async' => true,
+			'defer' => true,
+		);
 
-        $sanitized = wp_kses($html, $allowedHtml);
+		$allowedHtml['style'] = array(
+			'type'  => true,
+			'media' => true,
+		);
 
-        return sprintf(
-            '<div class="imm-block imm-block--html">%s</div>',
-            $sanitized
-        );
-    }
+		$sanitized = wp_kses( $html, $allowedHtml );
 
-    public function defaultConfig(): array
-    {
-        return [
-            'html' => '',
-        ];
-    }
+		return sprintf(
+			'<div class="imm-block imm-block--html">%s</div>',
+			$sanitized
+		);
+	}
+
+	public function defaultConfig(): array {
+		return array(
+			'html' => '',
+		);
+	}
 }

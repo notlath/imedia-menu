@@ -10,35 +10,32 @@ use IMedia\Menu\Icons\Providers\DashiconsProvider;
 use IMedia\Menu\Icons\Providers\FontAwesomeProvider;
 use IMedia\Menu\Icons\Providers\CustomSvgProvider;
 
-final class IconServiceProvider implements ServiceProvider
-{
-    private IconManager $manager;
+final class IconServiceProvider implements ServiceProvider {
 
-    public function register(): void
-    {
-        $this->manager = new IconManager();
-    }
+	private IconManager $manager;
 
-    public function boot(): void
-    {
-        $settings = get_option('imedia_menu_settings', []);
-        $enabledProviders = $settings['icon_providers'] ?? ['dashicons'];
+	public function register(): void {
+		$this->manager = new IconManager();
+	}
 
-        if (in_array('dashicons', $enabledProviders, true)) {
-            $this->manager->register(new DashiconsProvider());
-        }
+	public function boot(): void {
+		$settings         = get_option( 'imedia_menu_settings', array() );
+		$enabledProviders = $settings['icon_providers'] ?? array( 'dashicons' );
 
-        if (in_array('fontawesome', $enabledProviders, true)) {
-            $this->manager->register(new FontAwesomeProvider());
-        }
+		if ( in_array( 'dashicons', $enabledProviders, true ) ) {
+			$this->manager->register( new DashiconsProvider() );
+		}
 
-        if (in_array('custom_svg', $enabledProviders, true)) {
-            $this->manager->register(new CustomSvgProvider());
-        }
-    }
+		if ( in_array( 'fontawesome', $enabledProviders, true ) ) {
+			$this->manager->register( new FontAwesomeProvider() );
+		}
 
-    public function getManager(): IconManager
-    {
-        return $this->manager;
-    }
+		if ( in_array( 'custom_svg', $enabledProviders, true ) ) {
+			$this->manager->register( new CustomSvgProvider() );
+		}
+	}
+
+	public function getManager(): IconManager {
+		return $this->manager;
+	}
 }

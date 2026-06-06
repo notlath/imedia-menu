@@ -8,47 +8,43 @@ use IMedia\Menu\Contracts\ServiceProvider;
 use IMedia\Menu\Database\RevisionRepository;
 use IMedia\Menu\Database\PanelRepository;
 
-final class RevisionServiceProvider implements ServiceProvider
-{
-    private RevisionRepository $revisionRepo;
-    private PanelRepository $panelRepo;
+final class RevisionServiceProvider implements ServiceProvider {
 
-    public function register(): void
-    {
-        $this->revisionRepo = new RevisionRepository();
-        $this->panelRepo    = new PanelRepository();
-    }
+	private RevisionRepository $revisionRepo;
+	private PanelRepository $panelRepo;
 
-    public function boot(): void
-    {
-        add_action('imedia_menu_panel_saved', [$this, 'onPanelSaved'], 10, 1);
-        add_action('before_delete_post', [$this, 'onMenuItemDeleted'], 10, 2);
-    }
+	public function register(): void {
+		$this->revisionRepo = new RevisionRepository();
+		$this->panelRepo    = new PanelRepository();
+	}
 
-    public function onPanelSaved(int $menuItemId): void
-    {
-        $panel = $this->panelRepo->findByMenuItem($menuItemId);
+	public function boot(): void {
+		add_action( 'imedia_menu_panel_saved', array( $this, 'onPanelSaved' ), 10, 1 );
+		add_action( 'before_delete_post', array( $this, 'onMenuItemDeleted' ), 10, 2 );
+	}
 
-        if (!$panel || empty($panel->id)) {
-            return;
-        }
+	public function onPanelSaved( int $menuItemId ): void {
+		$panel = $this->panelRepo->findByMenuItem( $menuItemId );
 
-        $this->revisionRepo->create(
-            (int) $panel->id,
-            $menuItemId,
-            $panel->config ?? [],
-            $panel->styles ?? null,
-            get_current_user_id()
-        );
-    }
+		if ( ! $panel || empty( $panel->id ) ) {
+			return;
+		}
 
-    public function onMenuItemDeleted(int $postId, \WP_Post $post): void
-    {
-        if ($post->post_type !== 'nav_menu_item') {
-            return;
-        }
+		$this->revisionRepo->create(
+			(int) $panel->id,
+			$menuItemId,
+			$panel->config ?? array(),
+			$panel->styles ?? null,
+			get_current_user_id()
+		);
+	}
 
-        $this->panelRepo->delete($postId);
-        $this->revisionRepo->deleteByPanel($postId);
-    }
+	public function onMenuItemDeleted( int $postId, \WP_Post $post ): void {
+		if ( $post->post_type !== 'nav_menu_item' ) {
+			return;
+		}
+
+		$this->panelRepo->delete( $postId );
+		$this->revisionRepo->deleteByPanel( $postId );
+	}
 }

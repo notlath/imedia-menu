@@ -6,30 +6,27 @@ namespace IMedia\Menu\Visibility\Conditions;
 
 use IMedia\Menu\Contracts\VisibilityCondition;
 
-final class DeviceTypeCondition implements VisibilityCondition
-{
-    public function type(): string
-    {
-        return 'device_type';
-    }
+final class DeviceTypeCondition implements VisibilityCondition {
 
-    public function label(): string
-    {
-        return __('Device Type', 'imedia-menu');
-    }
+	public function type(): string {
+		return 'device_type';
+	}
 
-    public function evaluate(array $config): bool
-    {
-        $allowedDevices = $config['devices'] ?? [];
+	public function label(): string {
+		return __( 'Device Type', 'imedia-menu' );
+	}
 
-        if (empty($allowedDevices)) {
-            return true;
-        }
+	public function evaluate( array $config ): bool {
+		$allowedDevices = $config['devices'] ?? array();
 
-        $isMobile = function_exists('wp_is_mobile') && wp_is_mobile();
+		if ( empty( $allowedDevices ) ) {
+			return true;
+		}
 
-        $currentDevice = $isMobile ? 'mobile' : 'desktop';
+		$isMobile = function_exists( 'wp_is_mobile' ) && wp_is_mobile();
 
-        return in_array($currentDevice, $allowedDevices, true);
-    }
+		$currentDevice = $isMobile ? 'mobile' : 'desktop';
+
+		return in_array( $currentDevice, $allowedDevices, true );
+	}
 }

@@ -4,66 +4,62 @@ declare(strict_types=1);
 
 namespace IMedia\Menu\Database;
 
-final class Schema
-{
-    public const PANELS_TABLE     = 'imedia_menu_panels';
-    public const TEMPLATES_TABLE  = 'imedia_menu_templates';
-    public const REVISIONS_TABLE  = 'imedia_menu_revisions';
+final class Schema {
 
-    public function create(): void
-    {
-        global $wpdb;
+	public const PANELS_TABLE    = 'imedia_menu_panels';
+	public const TEMPLATES_TABLE = 'imedia_menu_templates';
+	public const REVISIONS_TABLE = 'imedia_menu_revisions';
 
-        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+	public function create(): void {
+		global $wpdb;
 
-        $charset = $wpdb->get_charset_collate();
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-        $panels = $this->getPanelsTableSql($wpdb->prefix, $charset);
-        dbDelta($panels);
+		$charset = $wpdb->get_charset_collate();
 
-        $templates = $this->getTemplatesTableSql($wpdb->prefix, $charset);
-        dbDelta($templates);
+		$panels = $this->getPanelsTableSql( $wpdb->prefix, $charset );
+		dbDelta( $panels );
 
-        $revisions = $this->getRevisionsTableSql($wpdb->prefix, $charset);
-        dbDelta($revisions);
-    }
+		$templates = $this->getTemplatesTableSql( $wpdb->prefix, $charset );
+		dbDelta( $templates );
 
-    public function validateRequirements(): void
-    {
-        global $wpdb;
+		$revisions = $this->getRevisionsTableSql( $wpdb->prefix, $charset );
+		dbDelta( $revisions );
+	}
 
-        $mysql_version = $wpdb->db_version();
+	public function validateRequirements(): void {
+		global $wpdb;
 
-        if (version_compare($mysql_version, '5.7', '<')) {
-            deactivate_plugins(BASENAME);
-            wp_die(
-                esc_html__('iMedia Menu requires MySQL 5.7+ or MariaDB 10.2+.', 'imedia-menu'),
-                esc_html__('Plugin Activation Error', 'imedia-menu'),
-                ['back_link' => true]
-            );
-        }
-    }
+		$mysql_version = $wpdb->db_version();
 
-    public function drop(): void
-    {
-        global $wpdb;
+		if ( version_compare( $mysql_version, '5.7', '<' ) ) {
+			deactivate_plugins( BASENAME );
+			wp_die(
+				esc_html__( 'iMedia Menu requires MySQL 5.7+ or MariaDB 10.2+.', 'imedia-menu' ),
+				esc_html__( 'Plugin Activation Error', 'imedia-menu' ),
+				array( 'back_link' => true )
+			);
+		}
+	}
 
-        $tables = [
-            $wpdb->prefix . self::PANELS_TABLE,
-            $wpdb->prefix . self::TEMPLATES_TABLE,
-            $wpdb->prefix . self::REVISIONS_TABLE,
-        ];
+	public function drop(): void {
+		global $wpdb;
 
-        foreach ($tables as $table) {
-            $wpdb->query("DROP TABLE IF EXISTS {$table}"); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.SchemaChange
-        }
-    }
+		$tables = array(
+			$wpdb->prefix . self::PANELS_TABLE,
+			$wpdb->prefix . self::TEMPLATES_TABLE,
+			$wpdb->prefix . self::REVISIONS_TABLE,
+		);
 
-    private function getPanelsTableSql(string $prefix, string $charset): string
-    {
-        $table = $prefix . self::PANELS_TABLE;
+		foreach ( $tables as $table ) {
+			$wpdb->query( "DROP TABLE IF EXISTS {$table}" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.SchemaChange
+		}
+	}
 
-        return "CREATE TABLE {$table} (
+	private function getPanelsTableSql( string $prefix, string $charset ): string {
+		$table = $prefix . self::PANELS_TABLE;
+
+		return "CREATE TABLE {$table} (
             id              BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             menu_item_id    BIGINT UNSIGNED NOT NULL,
             menu_id         BIGINT UNSIGNED NOT NULL,
@@ -81,13 +77,12 @@ final class Schema
             KEY idx_menu (menu_id),
             KEY idx_enabled (is_enabled)
         ) {$charset};";
-    }
+	}
 
-    private function getTemplatesTableSql(string $prefix, string $charset): string
-    {
-        $table = $prefix . self::TEMPLATES_TABLE;
+	private function getTemplatesTableSql( string $prefix, string $charset ): string {
+		$table = $prefix . self::TEMPLATES_TABLE;
 
-        return "CREATE TABLE {$table} (
+		return "CREATE TABLE {$table} (
             id          BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             name        VARCHAR(255) NOT NULL,
             description TEXT DEFAULT NULL,
@@ -98,13 +93,12 @@ final class Schema
             updated_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             KEY idx_name (name(191))
         ) {$charset};";
-    }
+	}
 
-    private function getRevisionsTableSql(string $prefix, string $charset): string
-    {
-        $table = $prefix . self::REVISIONS_TABLE;
+	private function getRevisionsTableSql( string $prefix, string $charset ): string {
+		$table = $prefix . self::REVISIONS_TABLE;
 
-        return "CREATE TABLE {$table} (
+		return "CREATE TABLE {$table} (
             id              BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             panel_id        BIGINT UNSIGNED NOT NULL,
             menu_item_id    BIGINT UNSIGNED NOT NULL,
@@ -116,5 +110,5 @@ final class Schema
             KEY idx_menu_item (menu_item_id),
             KEY idx_created (created_at)
         ) {$charset};";
-    }
+	}
 }

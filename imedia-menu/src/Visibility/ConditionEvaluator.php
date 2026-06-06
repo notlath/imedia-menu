@@ -14,109 +14,100 @@ use IMedia\Menu\Visibility\Conditions\LanguageCondition;
 use IMedia\Menu\Visibility\Conditions\UrlParameterCondition;
 use IMedia\Menu\Visibility\Conditions\PhpCallbackCondition;
 
-final class ConditionEvaluator
-{
-    /** @var array<string, VisibilityCondition> */
-    private array $conditions = [];
+final class ConditionEvaluator {
 
-    public function __construct()
-    {
-        $this->registerDefaults();
-    }
+	/** @var array<string, VisibilityCondition> */
+	private array $conditions = array();
 
-    public function register(VisibilityCondition $condition): void
-    {
-        $this->conditions[$condition->type()] = $condition;
-    }
+	public function __construct() {
+		$this->registerDefaults();
+	}
 
-    public function get(string $type): ?VisibilityCondition
-    {
-        return $this->conditions[$type] ?? null;
-    }
+	public function register( VisibilityCondition $condition ): void {
+		$this->conditions[ $condition->type() ] = $condition;
+	}
 
-    public function getAll(): array
-    {
-        return $this->conditions;
-    }
+	public function get( string $type ): ?VisibilityCondition {
+		return $this->conditions[ $type ] ?? null;
+	}
 
-    public function isItemVisible(object $item): bool
-    {
-        $visibility = get_post_meta($item->ID, '_imedia_menu_visibility', true);
+	public function getAll(): array {
+		return $this->conditions;
+	}
 
-        if (empty($visibility)) {
-            return true;
-        }
+	public function isItemVisible( object $item ): bool {
+		$visibility = get_post_meta( $item->ID, '_imedia_menu_visibility', true );
 
-        $conditions = is_string($visibility) ? json_decode($visibility, true) : $visibility;
+		if ( empty( $visibility ) ) {
+			return true;
+		}
 
-        if (empty($conditions)) {
-            return true;
-        }
+		$conditions = is_string( $visibility ) ? json_decode( $visibility, true ) : $visibility;
 
-        return $this->evaluateConditions($conditions);
-    }
+		if ( empty( $conditions ) ) {
+			return true;
+		}
 
-    public function isBlockVisible(array $block): bool
-    {
-        $conditions = $block['visibility'] ?? [];
+		return $this->evaluateConditions( $conditions );
+	}
 
-        if (empty($conditions)) {
-            return true;
-        }
+	public function isBlockVisible( array $block ): bool {
+		$conditions = $block['visibility'] ?? array();
 
-        return $this->evaluateConditions($conditions);
-    }
+		if ( empty( $conditions ) ) {
+			return true;
+		}
 
-    private function evaluateConditions(array $conditions): bool
-    {
-        $settings = get_option('imedia_menu_settings', []);
-        $defaultBehavior = $settings['default_visibility_behavior'] ?? 'all';
+		return $this->evaluateConditions( $conditions );
+	}
 
-        foreach ($conditions as $condition) {
-            $type   = $condition['type'] ?? '';
-            $config = $condition['config'] ?? [];
+	private function evaluateConditions( array $conditions ): bool {
+		$settings        = get_option( 'imedia_menu_settings', array() );
+		$defaultBehavior = $settings['default_visibility_behavior'] ?? 'all';
 
-            $handler = $this->get($type);
+		foreach ( $conditions as $condition ) {
+			$type   = $condition['type'] ?? '';
+			$config = $condition['config'] ?? array();
 
-            if ($handler === null) {
-                continue;
-            }
+			$handler = $this->get( $type );
 
-            $result = $handler->evaluate($config);
+			if ( $handler === null ) {
+				continue;
+			}
 
-            if ($defaultBehavior === 'all' && !$result) {
-                return false;
-            }
+			$result = $handler->evaluate( $config );
 
-            if ($defaultBehavior === 'any' && $result) {
-                return true;
-            }
-        }
+			if ( $defaultBehavior === 'all' && ! $result ) {
+				return false;
+			}
 
-        return $defaultBehavior === 'all';
-    }
+			if ( $defaultBehavior === 'any' && $result ) {
+				return true;
+			}
+		}
 
-    private function registerDefaults(): void
-    {
-        $defaults = [
-            new LoginStateCondition(),
-            new UserRoleCondition(),
-            new DeviceTypeCondition(),
-            new PageCondition(),
-            new ScheduleCondition(),
-            new LanguageCondition(),
-            new UrlParameterCondition(),
-            new PhpCallbackCondition(),
-        ];
+		return $defaultBehavior === 'all';
+	}
 
-        foreach ($defaults as $condition) {
-            $this->register($condition);
-        }
-    }
+	private function registerDefaults(): void {
+		$defaults = array(
+			new LoginStateCondition(),
+			new UserRoleCondition(),
+			new DeviceTypeCondition(),
+			new PageCondition(),
+			new ScheduleCondition(),
+			new LanguageCondition(),
+			new UrlParameterCondition(),
+			new PhpCallbackCondition(),
+		);
 
-    public static function getDefaultBehavior(): string
-    {
-        $settings = get_option('imedia_menu_settings', []);
-        return $settings['default_visibility_behavior'] ?? 'all';
-    }
+		foreach ( $defaults as $condition ) {
+			$this->register( $condition );
+		}
+	}
+
+	public static function getDefaultBehavior(): string {
+		$settings = get_option( 'imedia_menu_settings', array() );
+		return $settings['default_visibility_behavior'] ?? 'all';
+	}
 }

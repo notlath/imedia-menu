@@ -4,33 +4,30 @@ declare(strict_types=1);
 
 namespace IMedia\Menu\Visibility;
 
-final class ConditionRegistry
-{
-    private ConditionEvaluator $evaluator;
+final class ConditionRegistry {
 
-    public function __construct()
-    {
-        $this->evaluator = new ConditionEvaluator();
-    }
+	private ConditionEvaluator $evaluator;
 
-    public function getConditions(): array
-    {
-        $conditions = $this->evaluator->getAll();
+	public function __construct() {
+		$this->evaluator = new ConditionEvaluator();
+	}
 
-        $result = [];
+	public function getConditions(): array {
+		$conditions = $this->evaluator->getAll();
 
-        foreach ($conditions as $condition) {
-            $result[$condition->type()] = [
-                'type'  => $condition->type(),
-                'label' => $condition->label(),
-            ];
-        }
+		$result = array();
 
-        return $result;
-    }
+		foreach ( $conditions as $condition ) {
+			$result[ $condition->type() ] = array(
+				'type'  => $condition->type(),
+				'label' => $condition->label(),
+			);
+		}
 
-    public function getEvaluator(): ConditionEvaluator
-    {
-        return $this->evaluator;
-    }
+		return $result;
+	}
+
+	public function getEvaluator(): ConditionEvaluator {
+		return $this->evaluator;
+	}
 }

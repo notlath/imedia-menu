@@ -4,11 +4,28 @@
   $(document).ready(function () {
     $('.imedia-open-builder').on('click', function () {
       var itemId = $(this).data('item-id');
-      var url = new URL(window.location.href);
-      url.searchParams.set('page', 'imedia-menu');
-      url.searchParams.set('tab', 'builder');
-      url.searchParams.set('item_id', itemId);
-      window.location.href = url.toString();
+      var menuId = $('#menu').length ? parseInt($('#menu').val(), 10) : 0;
+      if (isNaN(menuId)) menuId = 0;
+
+      var modal = $('#imedia-panel-builder-modal');
+      if (!modal.length) return;
+
+      modal.data('item-id', itemId);
+      modal.data('menu-id', menuId);
+      $('body').addClass('imm-builder-open');
+      modal.attr('aria-hidden', 'false');
+      modal.addClass('imm-builder-modal--open');
+
+      $(document).trigger('imedia:open-builder', [{ itemId: itemId, menuId: menuId }]);
+    });
+
+    $(document).on('imedia:close-builder', function () {
+      var modal = $('#imedia-panel-builder-modal');
+      $('body').removeClass('imm-builder-open');
+      modal.attr('aria-hidden', 'true');
+      modal.removeClass('imm-builder-modal--open');
+      modal.removeData('item-id');
+      modal.removeData('menu-id');
     });
 
     $(document).on('click', '.imedia-export-btn', function () {
