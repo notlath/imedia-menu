@@ -40,13 +40,15 @@ final class MenuWalker extends \Walker_Nav_Menu {
 		$this->hoverDelay    = (int) ( $settings['hover_delay'] ?? 200 );
 	}
 
-	public function walk( array $elements, int $maxDepth ): string {
+	#[\ReturnTypeWillChange]
+	public function walk( $elements, $max_depth, ...$args ) {
 		$this->preloadPanels();
 
-		return parent::walk( $elements, $maxDepth );
+		return parent::walk( $elements, $max_depth, ...$args );
 	}
 
-	public function start_el( string &$output, object $item, int $depth = 0, ?array $args = null, int $id = 0 ): void {
+	#[\ReturnTypeWillChange]
+	public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
 		if ( ! $this->evaluator->isItemVisible( $item ) ) {
 			return;
 		}
@@ -70,11 +72,13 @@ final class MenuWalker extends \Walker_Nav_Menu {
 		$this->renderLink( $output, $item, $depth, $hasMega, $isMega, $hasKids );
 	}
 
-	public function end_el( string &$output, object $item, int $depth = 0, ?array $args = null ): void {
+	#[\ReturnTypeWillChange]
+	public function end_el( &$output, $item, $depth = 0, $args = null ) {
 		$output .= "</li>\n";
 	}
 
-	public function start_lvl( string &$output, int $depth = 0, ?array $args = null ): void {
+	#[\ReturnTypeWillChange]
+	public function start_lvl( &$output, $depth = 0, $args = null ) {
 		$classes = 'imm-sub';
 		$output .= sprintf(
 			'<ul class="%s" role="menu" data-animation="%s" hidden>',
@@ -83,11 +87,13 @@ final class MenuWalker extends \Walker_Nav_Menu {
 		);
 	}
 
-	public function end_lvl( string &$output, int $depth = 0, ?array $args = null ): void {
+	#[\ReturnTypeWillChange]
+	public function end_lvl( &$output, $depth = 0, $args = null ) {
 		$output .= "</ul>\n";
 	}
 
-	public function display_element( object $element, &$childrenElements, int $maxDepth, int $depth, array &$output, &$totalChildren ): void {
+	#[\ReturnTypeWillChange]
+	public function display_element( $element, &$children_elements, $max_depth, $depth, $args, &$output ) {
 		if ( isset( $this->panels[ $element->ID ] ) ) {
 			$panel = $this->panels[ $element->ID ];
 
@@ -97,7 +103,7 @@ final class MenuWalker extends \Walker_Nav_Menu {
 			}
 		}
 
-		parent::display_element( $element, $childrenElements, $maxDepth, $depth, $output, $totalChildren );
+		parent::display_element( $element, $children_elements, $max_depth, $depth, $args, $output );
 	}
 
 	private function preloadPanels(): void {
@@ -248,11 +254,11 @@ final class MenuWalker extends \Walker_Nav_Menu {
 		);
 	}
 
-	private function displayMegaPanel( object $element, array &$output, int $depth ): void {
+	private function displayMegaPanel( object $element, string &$output, int $depth ): void {
 		$panel     = $this->panels[ $element->ID ];
 		$panelHtml = $this->panelRenderer->render( $panel );
 
-		$this->renderLink( $output, $element, $depth, true, true );
+		$this->renderLink( $output, $element, $depth, true, true, false );
 
 		$panelWidthClass = 'imm-panel--' . $panel->panel_width;
 

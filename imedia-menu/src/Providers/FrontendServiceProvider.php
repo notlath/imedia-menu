@@ -20,7 +20,7 @@ final class FrontendServiceProvider implements ServiceProvider {
 
 	public function boot(): void {
 		add_action( 'wp_enqueue_scripts', array( $this->assets, 'enqueue' ), 100 );
-		add_filter( 'wp_nav_menu_args', array( $this, 'filterMenuArgs' ), 10, 2 );
+		add_filter( 'wp_nav_menu_args', array( $this, 'filterMenuArgs' ) );
 	}
 
 	public function filterMenuArgs( array $args ): array {

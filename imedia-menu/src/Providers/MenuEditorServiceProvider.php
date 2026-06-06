@@ -16,7 +16,7 @@ final class MenuEditorServiceProvider implements ServiceProvider {
 	}
 
 	public function boot(): void {
-		add_action( 'wp_nav_menu_item_custom_fields', array( $this->fields, 'renderFields' ), 10, 4 );
+		add_action( 'wp_nav_menu_item_custom_fields', array( $this->fields, 'renderFields' ), 10, 5 );
 		add_action( 'wp_update_nav_menu_item', array( $this->fields, 'saveFields' ), 10, 3 );
 		add_filter( 'manage_nav-menus_columns', array( $this->fields, 'addColumns' ) );
 	}

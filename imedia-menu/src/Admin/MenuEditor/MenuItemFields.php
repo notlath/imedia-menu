@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace IMedia\Menu\Admin\MenuEditor;
 
+use stdClass;
+
 final class MenuItemFields {
 
-	public function renderFields( int $itemId, object $item, int $depth, array $args ): void {
+	public function renderFields( string $itemId, object $item, int $depth, ?stdClass $args, int $currentObjectId ): void {
 		if ( $depth > 0 && $item->menu_item_parent === '0' ) {
 			return;
 		}

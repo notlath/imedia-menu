@@ -88,8 +88,7 @@ final class FontAwesomeProvider implements IconProvider {
 			'terminal'             => __( 'Terminal', 'imedia-menu' ),
 			'database'             => __( 'Database', 'imedia-menu' ),
 			'cloud'                => __( 'Cloud', 'imedia-menu' ),
-			'download'             => __( 'Download', 'imedia-menu' ),
-			'upload'               => __( 'Upload', 'imedia-menu' ),
+
 			'magic'                => __( 'Magic/Wand', 'imedia-menu' ),
 			'tools'                => __( 'Tools', 'imedia-menu' ),
 			'wrench'               => __( 'Wrench', 'imedia-menu' ),

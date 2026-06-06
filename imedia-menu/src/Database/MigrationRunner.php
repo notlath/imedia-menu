@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace IMedia\Menu\Database;
 
+use IMedia\Menu\Database\Migrations\Migration;
+
 final class MigrationRunner {
 
 	private const MIGRATIONS_NAMESPACE = 'IMedia\\Menu\\Database\\Migrations\\';
