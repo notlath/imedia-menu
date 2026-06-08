@@ -1,0 +1,61 @@
+/*!
+ * imedia-menu — Grid layout (M2)
+ *
+ * 12-track CSS grid for the PanelLayoutType::Grid strategy. Conditional
+ * stylesheet — only enqueued when at least one enabled panel uses
+ * layout_type='grid' (see Assets::enqueueLayoutAssets).
+ *
+ * Class names match GridLayout.php:
+ *   .imm-row--grid             row uses CSS grid; track count from --imm-row-tracks
+ *   .imm-col--grid             column uses inline `style="grid-column:span N"`
+ *   .imm-row--hide-mobile      row hidden below the mobile breakpoint
+ *   .imm-row--hide-desktop     row hidden at and above the mobile breakpoint
+ *
+ * The grid is logical (grid-column: span N works identically in LTR and RTL);
+ * only the `direction` is flipped for [dir="rtl"] so the rendering direction
+ * of grid auto-placement reverses for nested items.
+ */
+
+.imm-row--grid {
+  display: grid;
+  grid-template-columns: repeat(var(--imm-row-tracks, 12), minmax(0, 1fr));
+  gap: var(--imm-grid-gap, 16px);
+}
+
+.imm-col--grid {
+  min-width: 0;
+}
+
+.imm-row--hide-mobile {
+  display: grid;
+  grid-template-columns: repeat(var(--imm-row-tracks, 12), minmax(0, 1fr));
+  gap: var(--imm-grid-gap, 16px);
+}
+
+.imm-row--hide-desktop {
+  display: grid;
+  grid-template-columns: repeat(var(--imm-row-tracks, 12), minmax(0, 1fr));
+  gap: var(--imm-grid-gap, 16px);
+}
+
+@media (max-width: 768px) {
+  .imm-row--hide-mobile {
+    display: none;
+  }
+
+  .imm-row--grid,
+  .imm-row--hide-mobile,
+  .imm-row--hide-desktop {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 769px) {
+  .imm-row--hide-desktop {
+    display: none;
+  }
+}
+
+[dir="rtl"] .imm-row--grid {
+  direction: rtl;
+}

@@ -1,0 +1,107 @@
+/*!
+ * imedia-menu — Vertical + Accordion orientation (M2)
+ *
+ * Conditional stylesheet — only enqueued when a location uses
+ * orientation='vertical' or orientation='accordion'
+ * (see Assets::enqueueLayoutAssets).
+ *
+ * Class names match MenuWalker.php:
+ *   .imm-nav--vertical         container of a vertical menu
+ *   .imm-nav--accordion        container of an accordion menu
+ *   .imm-menu--vertical        top-level <ul> of a vertical menu
+ *   .imm-menu--accordion       top-level <ul> of an accordion menu
+ *   .imm-sub--vertical         submenu of a vertical menu
+ *   .imm-sub--accordion        submenu of an accordion menu
+ *
+ * Accordion differs from vertical in that all submenus are always visible
+ * (no hover/click toggle), and the trigger is forced to click.
+ */
+
+.imm-nav--vertical,
+.imm-nav--accordion {
+  align-items: stretch;
+  min-height: auto;
+}
+
+.imm-menu--vertical,
+.imm-menu--accordion {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  gap: 0;
+}
+
+.imm-menu--vertical > .imm-item,
+.imm-menu--accordion > .imm-item {
+  width: 100%;
+}
+
+.imm-menu--vertical .imm-link,
+.imm-menu--accordion .imm-link {
+  width: 100%;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--imm-dropdown-border, #e0e0e0);
+}
+
+.imm-menu--vertical .imm-sub,
+.imm-menu--accordion .imm-sub {
+  position: static;
+  width: 100%;
+  box-shadow: none;
+  border-left: 2px solid var(--imm-dropdown-border, #e0e0e0);
+  margin-left: 0;
+  padding-left: 8px;
+  background: transparent;
+}
+
+/* Accordion: submenus always visible. */
+.imm-nav--accordion .imm-sub,
+.imm-menu--accordion .imm-sub {
+  display: block;
+}
+
+.imm-nav--accordion .imm-sub[hidden],
+.imm-menu--accordion .imm-sub[hidden] {
+  display: block;
+}
+
+/* Vertical: submenu opens on hover (or click) — same as horizontal default. */
+.imm-nav--vertical .imm-sub[hidden],
+.imm-menu--vertical .imm-sub[hidden] {
+  display: none;
+}
+
+.imm-nav--vertical .imm-item--has-children:hover > .imm-sub[hidden],
+.imm-menu--vertical .imm-item--has-children:hover > .imm-sub[hidden] {
+  display: block;
+}
+
+/* Trigger indicator rotation. */
+.imm-nav--vertical .imm-caret,
+.imm-nav--accordion .imm-caret {
+  transform: rotate(-90deg);
+  transition: transform var(--imm-duration, 200ms) var(--imm-easing, ease-out);
+}
+
+.imm-nav--vertical .imm-item--has-children[aria-expanded="true"] .imm-caret,
+.imm-nav--accordion .imm-item--has-children[aria-expanded="true"] .imm-caret {
+  transform: rotate(0deg);
+}
+
+@media (max-width: 768px) {
+  .imm-nav--vertical,
+  .imm-nav--accordion,
+  .imm-menu--vertical,
+  .imm-menu--accordion {
+    position: static;
+  }
+
+  .imm-menu--vertical .imm-sub,
+  .imm-menu--accordion .imm-sub {
+    position: static;
+    border-left: none;
+    padding-left: 0;
+  }
+}

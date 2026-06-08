@@ -1,0 +1,44 @@
+.imm-builder-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    display: flex;
+    flex-direction: column;
+}
+
+.imm-builder-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.imm-builder-modal-container {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    .imm-builder-overlay {
+        position: relative;
+        flex: 1;
+        z-index: auto;
+    }
+
+    .imm-builder {
+        height: 100vh;
+    }
+}
+
+body.imm-builder-open {
+    overflow: hidden;
+
+    #adminmenuback,
+    #adminmenuwrap,
+    #wpadminbar,
+    #wpfooter,
+    .notice,
+    .update-nag {
+        z-index: auto;
+    }
+}

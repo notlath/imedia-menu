@@ -1,0 +1,14 @@
+{
+  "name": "imedia-menu-location",
+  "title": "iMedia Menu Location",
+  "category": "module",
+  "icon": "menu",
+  "settings": [
+    {
+      "id": "location",
+      "label": "Menu Location",
+      "type": "select",
+      "options": []
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+# Distribution file list for wp.org / direct zip packaging.
+# When building the distributable plugin archive, every file in the
+# source tree that matches any pattern below is EXCLUDED.
+# Mirrors the .gitignore rules that should not ship to end users.
+
+# --- Version control ---
+.git/
+.gitignore
+.github/
+.gitattributes
+
+# --- CI / build configs ---
+.distignore
+.phpunit.result.cache
+.phpcs-cache
+.phpstan-cache/
+.phpstan.neon.php
+
+# --- Dependencies (Composer) ---
+vendor/
+
+# --- Dependencies (npm) ---
+node_modules/
+**/node_modules/
+package-lock.json
+yarn.lock
+
+# --- Local cache / build output ---
+var/
+test-results/
+playwright-report/
+playwright/.cache/
+
+# --- Test sources (delivered only via Composer dev autoload) ---
+tests/
+phpunit*.xml.dist
+playwright.config.js
+phpcs.xml.dist
+phpstan.neon
+
+# --- Dev tooling configs kept at plugin root ---
+.editorconfig
+.eslintrc*
+.stylelintrc*
+.prettierrc*
+
+# --- Logs ---
+*.log
+npm-debug.log*
+
+# --- OS / IDE ---
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# --- Agent skills (project-local only) ---
+.agents/
+.claude/
+
+# --- Documentation that's internal-only ---
+AUDIT.md
+IMPLEMENTATION_PLAN.md
+docs/internal/
+
+# --- Demo / sample content (kept outside distribution) ---
+demo/
+sample-data/

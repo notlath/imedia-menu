@@ -1,0 +1,54 @@
+# Composer
+vendor/
+
+# npm / Node (including nested in per-bundle directories)
+node_modules/
+**/node_modules/
+
+# Agent skills (project-level)
+.agents/
+
+# WordPress core & uploads (local dev only)
+wp-content/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# PHP tooling
+.phpunit.result.cache
+.phpcs-cache
+.phpstan-cache/
+.phpstan.neon.php
+var/
+
+# Test artifacts
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Build artifacts (root only)
+# Note: assets/admin/*/build/ and assets/blocks/*/build/ are intentionally
+# committed as the pre-built distribution (see DEVELOPER.md "Build pipeline").
+# Nested node_modules inside those build directories are NOT source-of-truth
+# and are gitignored via the **/node_modules/ rule above.
+/build/
+/dist/

@@ -1,0 +1,100 @@
+.imedia-menu-settings .nav-tab-wrapper {
+  margin-bottom: 20px;
+}
+
+.imedia-menu-settings .tab-content {
+  background: #fff;
+  padding: 20px;
+  border: 1px solid #c3c4c7;
+  border-top: none;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.imedia-menu-fields {
+  border-left: 3px solid #0066cc;
+}
+
+.imedia-menu-fields select,
+.imedia-menu-fields input[type="text"],
+.imedia-menu-fields textarea {
+  margin-top: 4px;
+}
+
+.imedia-open-builder {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 4px;
+}
+
+.imedia-open-builder .dashicons {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+
+.imedia-mega-toggle:checked ~ .imedia-mega-options {
+  display: block;
+}
+
+.imedia-mega-options {
+  display: none;
+  margin-top: 8px;
+  padding: 8px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+}
+
+.dark-mode .imedia-menu-settings .tab-content {
+  background: #1d2327;
+  border-color: #2c3338;
+  color: #e0e0e0;
+}
+
+.dark-mode .imedia-menu-fields {
+  background: #2c3338 !important;
+  border-left-color: #0066cc;
+}
+
+.dark-mode .imedia-menu-fields input,
+.dark-mode .imedia-menu-fields select,
+.dark-mode .imedia-menu-fields textarea {
+  background: #1d2327;
+  color: #e0e0e0;
+  border-color: #464b52;
+}
+
+/* Modal overlay - ensures builder sits above all WP admin UI */
+.imm-builder-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 99998;
+}
+
+.imm-builder-modal--open {
+  display: block;
+}
+
+.imm-builder-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 0;
+}
+
+.imm-builder-modal-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+}
+
+body.imm-builder-open {
+  overflow: hidden;
+}
+
+body.imm-builder-open #adminmenuback,
+body.imm-builder-open #adminmenuwrap,
+body.imm-builder-open #wpadminbar {
+  z-index: auto;
+}

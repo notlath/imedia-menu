@@ -1,0 +1,53 @@
+/* Menu item badges — megamenu-pro parity */
+.imm-badge {
+	display: inline-block;
+	padding: 1px 6px;
+	margin-left: 6px;
+	border-radius: 2px;
+	font-size: 10px;
+	font-weight: normal;
+	line-height: 1.4;
+	color: var(--imm-badge-text, #fff);
+	background: var(--imm-badge-bg, #e74c3c);
+	text-transform: none;
+	vertical-align: super;
+	pointer-events: none;
+	white-space: nowrap;
+	max-width: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.imm-badge--style-1 {
+	background: var(--imm-badge-bg, #D32F2F);
+}
+
+.imm-badge--style-2 {
+	background: var(--imm-badge-bg, #00796B);
+}
+
+.imm-badge--style-3 {
+	background: var(--imm-badge-bg, #FFC107);
+}
+
+.imm-badge--style-4 {
+	background: var(--imm-badge-bg, #303F9F);
+}
+
+/* Responsive visibility */
+.imm-hide-on-mobile {
+	display: none !important;
+}
+
+.imm-hide-on-desktop {
+	display: inline-block !important;
+}
+
+@media (min-width: 769px) {
+	.imm-hide-on-mobile {
+		display: inline-block !important;
+	}
+	.imm-hide-on-desktop {
+		display: none !important;
+	}
+}
