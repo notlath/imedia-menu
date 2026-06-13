@@ -896,6 +896,10 @@ final class RestApiServiceProvider implements ServiceProvider {
 	public function getSettings(): \WP_REST_Response {
 		$settings = get_option( 'imedia_menu_settings', array() );
 
+		// Attach fonts metadata for the React settings page.
+		$settings['_fonts']   = \IMedia\Menu\Fonts\GoogleFontsProvider::getFonts();
+		$settings['_weights'] = \IMedia\Menu\Fonts\GoogleFontsProvider::getWeights();
+
 		return new \WP_REST_Response( $settings, 200 );
 	}
 

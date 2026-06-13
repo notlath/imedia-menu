@@ -20,10 +20,12 @@ import IconsTab from './IconsTab';
 import PerformanceTab from './PerformanceTab';
 import AdvancedTab from './AdvancedTab';
 import LocationTab from './LocationTab';
+import FontsTab from './FontsTab';
 
 const TABS = [
     { id: 'general', label: __('General', 'imedia-menu'), Component: GeneralTab },
     { id: 'design', label: __('Design', 'imedia-menu'), Component: DesignTab },
+    { id: 'fonts', label: __('Fonts', 'imedia-menu'), Component: FontsTab },
     { id: 'animations', label: __('Animations', 'imedia-menu'), Component: AnimationsTab },
     { id: 'mobile', label: __('Mobile', 'imedia-menu'), Component: MobileTab },
     { id: 'visibility', label: __('Visibility', 'imedia-menu'), Component: VisibilityTab },

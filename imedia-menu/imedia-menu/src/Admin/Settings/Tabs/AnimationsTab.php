@@ -62,7 +62,7 @@ final class AnimationsTab implements SettingsTab {
 		return $validated;
 	}
 
-	public function sanitize( array $input ): array {
+	public function sanitize( ?array $input ): array {
 		$sanitized = array();
 
 		if ( isset( $input['animation_easing'] ) ) {

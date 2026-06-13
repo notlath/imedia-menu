@@ -126,7 +126,7 @@ final class GeneralTab implements SettingsTab {
 		return $validated;
 	}
 
-	public function sanitize( array $input ): array {
+	public function sanitize( ?array $input ): array {
 		$sanitized = array();
 
 		if ( isset( $input['enabled'] ) ) {

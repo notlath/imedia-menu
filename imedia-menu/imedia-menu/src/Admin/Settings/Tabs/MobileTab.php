@@ -74,7 +74,7 @@ final class MobileTab implements SettingsTab {
 		return $validated;
 	}
 
-	public function sanitize( array $input ): array {
+	public function sanitize( ?array $input ): array {
 		$sanitized = array();
 
 		if ( isset( $input['mobile_breakpoint'] ) ) {

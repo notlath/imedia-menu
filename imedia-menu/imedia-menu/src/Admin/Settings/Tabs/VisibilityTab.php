@@ -71,7 +71,7 @@ add_filter( 'imedia_menu_item_visible', function ( $visible, $item, $conditions 
 		return $validated;
 	}
 
-	public function sanitize( array $input ): array {
+	public function sanitize( ?array $input ): array {
 		$sanitized = array();
 
 		if ( isset( $input['visibility_default_behavior'] ) ) {

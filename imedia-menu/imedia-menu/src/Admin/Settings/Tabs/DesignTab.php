@@ -456,7 +456,7 @@ final class DesignTab implements SettingsTab {
 		return $validated;
 	}
 
-	public function sanitize( array $input ): array {
+	public function sanitize( ?array $input ): array {
 		$sanitized = array();
 
 		if ( isset( $input['menu_bar_bg'] ) ) {

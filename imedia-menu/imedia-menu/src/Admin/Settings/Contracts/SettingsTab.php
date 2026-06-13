@@ -14,5 +14,5 @@ interface SettingsTab {
 
 	public function validate( array $input ): array;
 
-	public function sanitize( array $input ): array;
+	public function sanitize( ?array $input ): array;
 }

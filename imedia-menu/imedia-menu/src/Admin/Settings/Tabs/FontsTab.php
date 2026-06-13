@@ -88,6 +88,38 @@ final class FontsTab implements SettingsTab {
 			<p class="description"><?php esc_html_e( 'Selected fonts will appear in the list above after saving.', 'imedia-menu' ); ?></p>
 		</div>
 
+		<h2><?php esc_html_e( 'Menu Font Settings', 'imedia-menu' ); ?></h2>
+		<table class="form-table">
+			<tr>
+				<th scope="row"><?php esc_html_e( 'Menu Font Family', 'imedia-menu' ); ?></th>
+				<td>
+					<select name="imedia_menu_settings[font_family]" style="min-width:300px;">
+						<option value="" <?php selected( empty( $settings['font_family'] ) ); ?>><?php esc_html_e( '— Inherit (default) —', 'imedia-menu' ); ?></option>
+						<?php foreach ( $enabled as $fontName => $config ) : ?>
+							<option value="<?php echo esc_attr( $fontName ); ?>" <?php selected( $settings['font_family'] ?? '', $fontName ); ?>>
+								<?php echo esc_html( $fontName ); ?>
+							</option>
+						<?php endforeach; ?>
+					</select>
+					<p class="description"><?php esc_html_e( 'Choose one of the enabled Google Fonts to use as the menu font. Select "Inherit" to use your theme default.', 'imedia-menu' ); ?></p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><?php esc_html_e( 'Menu Font Size', 'imedia-menu' ); ?></th>
+				<td>
+					<input type="number"
+							name="imedia_menu_settings[font_size]"
+							value="<?php echo esc_attr( $settings['font_size'] ?? 15 ); ?>"
+							min="10"
+							max="50"
+							step="1"
+							class="small-text"
+					/> px
+					<p class="description"><?php esc_html_e( 'Font size for menu items (10–50px). Default: 15px.', 'imedia-menu' ); ?></p>
+				</td>
+			</tr>
+		</table>
+
 		<script>
 		jQuery( function( $ ) {
 			$( '#imm-add-font-btn' ).on( 'click', function() {
@@ -144,9 +176,14 @@ final class FontsTab implements SettingsTab {
 	public function validate( array $input ): array {
 		$validated = array();
 
+		if ( isset( $input['font_size'] ) ) {
+			$validated['font_size'] = min( 50, max( 10, (int) $input['font_size'] ) );
+		}
+
 		if ( isset( $input['google_fonts'] ) && is_array( $input['google_fonts'] ) ) {
 			$allFonts   = GoogleFontsProvider::getFonts();
 			$allWeights = GoogleFontsProvider::getWeights();
+			$fontData   = array();
 
 			foreach ( $input['google_fonts'] as $font => $config ) {
 				if ( ! in_array( $font, $allFonts, true ) ) {
@@ -166,9 +203,20 @@ final class FontsTab implements SettingsTab {
 				}
 
 				if ( isset( $config['active'] ) ) {
-					$validated[ $font ] = array(
+					$fontData[ $font ] = array(
 						'weights' => $weights,
 					);
+				}
+			}
+
+			if ( ! empty( $fontData ) ) {
+				$validated['google_fonts'] = $fontData;
+
+				// Validate font_family against the submitted enabled fonts, not the master list.
+				if ( isset( $input['font_family'] ) && $input['font_family'] !== '' ) {
+					if ( isset( $fontData[ $input['font_family'] ] ) ) {
+						$validated['font_family'] = $input['font_family'];
+					}
 				}
 			}
 		}
@@ -176,7 +224,42 @@ final class FontsTab implements SettingsTab {
 		return $validated;
 	}
 
-	public function sanitize( array $input ): array {
-		return $this->validate( $input );
+	public function sanitize( ?array $input ): array {
+		$sanitized = array();
+
+		if ( isset( $input['font_family'] ) ) {
+			$sanitized['font_family'] = sanitize_text_field( $input['font_family'] );
+		}
+
+		if ( isset( $input['font_size'] ) ) {
+			$sanitized['font_size'] = (int) $input['font_size'];
+		}
+
+		if ( isset( $input['google_fonts'] ) && is_array( $input['google_fonts'] ) ) {
+			$fontData = array();
+
+			foreach ( $input['google_fonts'] as $font => $config ) {
+				$weights    = array();
+				$rawWeights = $config['weights'] ?? array();
+
+				if ( is_array( $rawWeights ) ) {
+					foreach ( $rawWeights as $w ) {
+						$weights[] = (int) $w;
+					}
+				}
+
+				if ( isset( $config['active'] ) ) {
+					$fontData[ $font ] = array(
+						'weights' => $weights,
+					);
+				}
+			}
+
+			if ( ! empty( $fontData ) ) {
+				$sanitized['google_fonts'] = $fontData;
+			}
+		}
+
+		return $sanitized;
 	}
 }

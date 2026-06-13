@@ -81,7 +81,7 @@ final class AdvancedTab implements SettingsTab {
 		return $validated;
 	}
 
-	public function sanitize( array $input ): array {
+	public function sanitize( ?array $input ): array {
 		$sanitized = array();
 
 		if ( isset( $input['delete_data_on_uninstall'] ) ) {

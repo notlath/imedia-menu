@@ -23,6 +23,11 @@ final class MobileServiceProvider implements ServiceProvider {
 	public function enqueueMobileAssets(): void {
 		$settings = get_option( 'imedia_menu_settings', array() );
 		$bp       = (int) ( $settings['mobile_breakpoint'] ?? 768 );
+		$enabled  = $settings['enabled'] ?? true;
+
+		if ( ! $enabled ) {
+			return;
+		}
 
 		wp_enqueue_style(
 			'imm-mobile',

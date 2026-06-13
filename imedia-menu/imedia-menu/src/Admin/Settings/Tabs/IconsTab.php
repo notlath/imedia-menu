@@ -161,7 +161,7 @@ final class IconsTab implements SettingsTab {
 		return $validated;
 	}
 
-	public function sanitize( array $input ): array {
+	public function sanitize( ?array $input ): array {
 		$sanitized = array();
 
 		if ( isset( $input['icon_providers'] ) && is_array( $input['icon_providers'] ) ) {

@@ -109,8 +109,12 @@ final class SettingsServiceProvider implements ServiceProvider {
 		);
 	}
 
-	public function sanitizeSettings( array $input ): array {
-		$sanitized = array();
+	public function sanitizeSettings( ?array $input ): array {
+		if ( $input === null ) {
+			return array();
+		}
+
+		$sanitized = get_option( 'imedia_menu_settings', array() );
 
 		foreach ( $this->registry->getAll() as $tab ) {
 			$sanitized = array_merge( $sanitized, $tab->sanitize( $input ) );

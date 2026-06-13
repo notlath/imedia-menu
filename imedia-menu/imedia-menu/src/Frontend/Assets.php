@@ -10,11 +10,6 @@ final class Assets {
 
 	public function enqueue(): void {
 		$settings = get_option( 'imedia_menu_settings', array() );
-		$enabled  = $settings['enabled'] ?? true;
-
-		if ( ! $enabled ) {
-			return;
-		}
 
 		wp_enqueue_style(
 			'imm-base',
@@ -22,8 +17,6 @@ final class Assets {
 			array(),
 			IMEDIA_MENU_VERSION
 		);
-
-		$this->enqueueCustomCss();
 
 		wp_enqueue_script(
 			'imm',
@@ -45,6 +38,13 @@ final class Assets {
 			)
 		);
 
+		$enabled = $settings['enabled'] ?? true;
+
+		if ( ! $enabled ) {
+			return;
+		}
+
+		$this->enqueueCustomCss();
 		$this->maybeInlineCustomCss();
 		$this->enqueueConditionalAssets();
 		$this->enqueueLayoutAssets( $settings );

@@ -16,7 +16,7 @@ final class FontsServiceProvider implements ServiceProvider {
 	}
 
 	public function boot(): void {
-		add_action( 'wp_enqueue_scripts', array( $this->manager, 'enqueue' ), 20 );
+		add_action( 'wp_enqueue_scripts', array( $this->manager, 'enqueue' ), 110 );
 	}
 
 	public function getManager(): FontsManager {
